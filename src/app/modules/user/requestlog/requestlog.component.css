@@ -1,0 +1,120 @@
+.ribbon {
+    width: 300px;
+    position: absolute;
+    left: 50%;
+    margin-left: -150px;
+    text-align: center;
+    font-size: 20px !important;
+    background: #4CA2CD;
+    background: linear-gradient(to bottom, #4CA2CD, #67B26F);
+    box-shadow: rgba(0,0,0,0.3) 0 1px 1px;
+    font-family: 'Helvetica Neue',Helvetica, sans-serif;
+}
+
+.ribbon p {
+    font-size: 18px !important;
+    color: #FFFFFF;
+    text-shadow: #67B26F 0 1px 0;
+    margin:0px;
+    padding: 8px 10px;
+}
+
+.ribbon:before, .ribbon:after {
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: -1em;
+    border: 1.5em solid #4CA2CD;
+    z-index: -1;
+}
+
+.ribbon:before {
+    left: -2em;
+    border-right-width: 1.5em;
+    border-left-color: transparent;
+    box-shadow: rgba(0,0,0,0.4) 1px 1px 1px;
+}
+
+.ribbon:after {
+    right: -2em;
+    border-left-width: 1.5em;
+    border-right-color: transparent;
+    box-shadow: rgba(0,0,0,0.4) -1px 1px 1px;
+}
+
+.ribbon .ribbon-content:before, .ribbon .ribbon-content:after {
+    border-color: #67B26F transparent transparent transparent;
+    position: absolute;
+    display: block;
+    border-style: solid;
+    bottom: -1em;
+    content: '';
+}
+
+.ribbon .ribbon-content:before {
+    left: 0;
+    border-width: 1em 0 0 1em;
+}
+
+.ribbon .ribbon-content:after {
+    right: 0;
+    border-width: 1em 1em 0 0;
+}
+
+.table-responsive
+{
+ box-shadow: 15px 15px 15px 15px grey;
+ max-height: 700px;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+ background-color: #4c956c;
+ color: white;
+}
+
+.input-group-addon
+{
+ background: #67B26F;  /* fallback for old browsers */
+ background: -webkit-linear-gradient(to left, #4ca2cd, #67B26F);  /* Chrome 10-25, Safari 5.1-6 */
+ background: linear-gradient(to left, #4ca2cd, #67B26F); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+thead
+{
+ color: white;
+}
+
+th
+{
+ background: #67B26F;  /* fallback for old browsers */
+ background: -webkit-linear-gradient(to left, #4ca2cd, #67B26F);  /* Chrome 10-25, Safari 5.1-6 */
+ background: linear-gradient(to left, #4ca2cd, #67B26F); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+ background-attachment:fixed;
+ position: sticky;
+ top: 0;
+ z-index: 10;
+}
+
+::-webkit-scrollbar
+{
+ width: 12px;
+}
+
+::-webkit-scrollbar-track
+{
+ background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb
+{
+ background: #67B26F;
+ background: -webkit-linear-gradient(top, #67B26F 0%, #4ca2cd 100%);
+ background: linear-gradient(to bottom, #67B26F 0%, #4ca2cd 100%);
+}
+
+::-webkit-scrollbar-thumb:hover
+{
+ background: #45a247;
+ background: -webkit-linear-gradient(top, #45a247 0%, #283c86 100%);
+ background: linear-gradient(to bottom, #45a247 0%, #283c86 100%);
+}

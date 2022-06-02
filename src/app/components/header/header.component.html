@@ -1,0 +1,103 @@
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-light">
+    <img src="assets/eservices.png" class="img-fluid" style="height: 45px" />
+    <button
+      class="navbar-toggler ml-auto"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="homeUrl"
+          >
+            <i class="bi bi-house" style="font-size: 1.3rem"></i>&nbsp; Home
+            <span class="sr-only">(current)</span></a
+          >
+        </li>
+        <li class="nav-item" *ngIf="userA">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="adminUrl"
+            ><i class="bi bi-people" style="font-size: 1.3rem"></i>&nbsp; Admin</a
+          >
+        </li>
+        <li class="nav-item" *ngIf="userA">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="requestLogUrl"
+            ><i class="bi bi-file-earmark-check" style="font-size: 1.3rem"></i>&nbsp; Request Log</a
+          >
+        </li>
+        <li class="nav-item dropdown" *ngIf="!userC">
+          <a
+            class="nav-link dropdown-toggle"
+            id="navbarDropdownMenuLink"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="bi bi-folder2-open" style="font-size: 1.3rem"></i>&nbsp;
+            Self Service
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <div *ngFor="let route of routes; let i = index">
+              <a
+                class="dropdown-item"
+                routerLinkActive="active"
+                routerLink="{{ route.routes }}"
+                >{{ routes[i].roles }}</a
+              >
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="helpUrl"
+            ><i class="bi bi-info-circle" style="font-size: 1.3rem"></i>&nbsp;
+            Help</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="userprofileUrl"
+            ><i class="bi bi-person-circle" style="font-size: 1.3rem"></i>&nbsp;
+            Profile</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="logoutUrl"
+            ><i class="bi bi-box-arrow-in-left" style="font-size: 1.3rem"></i
+            >&nbsp; Log Out</a
+          >
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  
+<div
+class="alert alert-danger alert-dismissible"
+id="myServerAlert"
+role="alert"
+*ngIf="serverError"
+style="margin: auto; width: 30%"
+>
+<button
+  type="button"
+  aria-hidden="true"
+  (click)="hideMyServerAlert()"
+  class="close"
+  aria-label="Close"
+>
+  <i class="bi bi-x"></i>
+</button>
+<span>
+  <b> Failure - </b> An unknown server error has occurred. Please try again
+  later.
+</span>
+</div>

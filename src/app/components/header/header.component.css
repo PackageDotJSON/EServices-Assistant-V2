@@ -1,0 +1,35 @@
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #67B26F;
+    background: -webkit-linear-gradient(top, #4ca2cd 0%, #67B26F 100%);
+    background: linear-gradient(to bottom, #4ca2cd 0%, #67B26F 100%);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #45a247;
+    background: -webkit-linear-gradient(top, #283c86 0%, #45a247 100%);
+    background: linear-gradient(to bottom, #283c86 0%, #45a247 100%);
+  }
+  
+  .navbar
+  {
+    background: #283c86;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #45a247, #283c86);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #45a247, #283c86); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    font-size: 16px;
+    justify-content: center;
+  }
+
+  .dropdown-menu
+  {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
