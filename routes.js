@@ -28,9 +28,6 @@ var secp_4 = Buffer.from(process.env.SECP4DBKey, 'base64').toString('ascii');
 var secp_5 = Buffer.from(process.env.SECP5DBKey, 'base64').toString('ascii');
 var secp_6 = Buffer.from(process.env.SECP6DBKey, 'base64').toString('ascii');
 
-//username: db2@admin1
-//pass: Db@admin1
-
 try
 {
   oracledb.initOracleClient({libDir: 'C:/instantclient_19_14'});

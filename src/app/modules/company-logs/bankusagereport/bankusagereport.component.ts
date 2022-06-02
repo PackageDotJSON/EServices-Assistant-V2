@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { BASE_URL } from 'src/app/constants/base-url.constant';
 import { CHANGE_COMPANY_OBJECT_API } from 'src/app/enums/apis.enum';
 import { CompanyLogsService } from '../services/company-logs.service';
@@ -12,13 +12,14 @@ declare var $: any;
   templateUrl: './bankusagereport.component.html',
   styleUrls: ['./bankusagereport.component.css']
 })
-export class BankusagereportComponent implements OnInit {
+export class BankusagereportComponent implements OnInit, OnDestroy {
 
   bankUsageReport$: Observable<any>;
   bankUsageReport: string[];
   startDateKey = '';
   endDateKey = '';
   writeToExcelAlert = false;
+  subscriber: Subscription;
 
   constructor(private companyLogsService: CompanyLogsService, private http: HttpClient) { }
 
@@ -32,8 +33,7 @@ export class BankusagereportComponent implements OnInit {
       endDate: this.endDateKey
     };
     this.bankUsageReport$ = this.companyLogsService.fetchBankUsageReport(payload);
-    this.bankUsageReport$.subscribe(res => this.bankUsageReport = res)
-    
+    this.subscriber = this.bankUsageReport$.subscribe(res => this.bankUsageReport = res);
   }
 
   exportData()
@@ -56,6 +56,10 @@ export class BankusagereportComponent implements OnInit {
   showExcelAlert()
   {
     $('#excelAlert').show()
+  }
+
+  ngOnDestroy(): void {
+    this.subscriber.unsubscribe();
   }
 
 }

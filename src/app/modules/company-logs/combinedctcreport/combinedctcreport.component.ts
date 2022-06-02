@@ -13,6 +13,8 @@ export class CombinedctcreportComponent implements OnInit, OnDestroy {
   subsriber: Subscription;
   digitalCtcReport: string[];
   bankPortalData: string[];
+  digitalAmount = 0;
+  sumOfDigitalAmounts: number[] = [];
 
   constructor(private companyLogsService: CompanyLogsService) { }
 
