@@ -1237,9 +1237,6 @@ router.post('/api/getbankusagereport', (req, res) => {
       let startDate = req.body.startDate;
       let endDate = req.body.endDate;
 
-      startDate.length === 0 && (startDate = '2018-01-01');
-      endDate.length === 0 && (endDate = '2022-01-01');
-
       const bankPortal = `select B.ENTITY_NAME,count(*) Total_Searches from 
       ESUSER.BANK_ENTITY_LOOKUP BE
       left outer join

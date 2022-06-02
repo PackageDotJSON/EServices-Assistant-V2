@@ -5,6 +5,8 @@ import { BASE_URL } from 'src/app/constants/base-url.constant';
 import { CHANGE_COMPANY_OBJECT_API } from 'src/app/enums/apis.enum';
 import { CompanyLogsService } from '../services/company-logs.service';
 import * as bootstrap from "bootstrap";
+import { tap } from 'rxjs/operators';
+import { END_KEY, START_KEY } from 'src/app/settings/app.settings';
 declare var $: any;
 
 @Component({
@@ -16,10 +18,10 @@ export class BankusagereportComponent implements OnInit, OnDestroy {
 
   bankUsageReport$: Observable<any>;
   bankUsageReport: string[];
-  startDateKey = '';
-  endDateKey = '';
+  startDateKey = START_KEY;
+  endDateKey = END_KEY;
   writeToExcelAlert = false;
-  subscriber: Subscription;
+  subscriber: Subscription[] = [];
 
   constructor(private companyLogsService: CompanyLogsService, private http: HttpClient) { }
 
@@ -33,19 +35,19 @@ export class BankusagereportComponent implements OnInit, OnDestroy {
       endDate: this.endDateKey
     };
     this.bankUsageReport$ = this.companyLogsService.fetchBankUsageReport(payload);
-    this.subscriber = this.bankUsageReport$.subscribe(res => this.bankUsageReport = res);
+    this.subscriber.push(this.bankUsageReport$.pipe(tap(res => this.bankUsageReport = res)).subscribe());
   }
 
   exportData()
   {
-    this.http.post(BASE_URL + CHANGE_COMPANY_OBJECT_API.EXPORT_TO_EXCEL, {value: this.bankUsageReport, fileName: 'BankReport'})
-    .subscribe(responseData => {
-        if(JSON.stringify(responseData).includes("Written to Excel Successfully"))
-        {
-          this.writeToExcelAlert = true;
-          this.showExcelAlert();
-        }
-    })
+    this.subscriber.push(this.http.post(BASE_URL + CHANGE_COMPANY_OBJECT_API.EXPORT_TO_EXCEL, {value: this.bankUsageReport, fileName: 'BankReport'})
+    .pipe(tap(res => {
+      if(JSON.stringify(res).includes("Written to Excel Successfully"))
+      {
+        this.writeToExcelAlert = true;
+        this.showExcelAlert();
+      }
+    })).subscribe());
   }
 
   hideExcelAlert()
@@ -59,7 +61,9 @@ export class BankusagereportComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriber.unsubscribe();
+    this.subscriber.forEach(subscription => {
+      subscription.unsubscribe();
+    })
   }
 
 }
