@@ -6,10 +6,12 @@ The app has been developed using the latest Single Page Application (SPA) and Re
 
 It includes the following features:
 
-User Management System: This allows the superuser/administrator to create a new user, granting him the access to this application.
-Role Management System: This allows the superuser/administrator to add/modify roles of the users. This grants the admin right to restrict/allow roles depending upon a user.
-Session Management System: Token Management System, to be more precise, maintains a session between a server and a user for a certain amount of time. Meaning, a user wouldn't be able to access this app after the token has expired.
-Profile Management System: This allows each user to maintain his/her profile along with having an option to upload his/her profile picture.
+User Management: This allows the superuser/administrator to create a new user in order to grant him an access to this application.
+Role Management: This allows the superuser/administrator to add/modify roles of the users. This grants the admin right to restrict/allow roles depending upon a user.
+Reports Management: This application contains multiple reports that can be alloted to each user by an administrator.
+Profile Management (Client): This allows each user to maintain his/her profile along with having an option to upload his/her profile picture. However, in order to change some fields, the user has to initiate a request to an administrator.
+Profile Management (Admin): An administrator is capable of changing a particular user's profile data on his request.
+Session Management: This allows the application to maintain a session between a server and a user for a certain amount of time. Meaning, a user wouldn't be able to access this app after the session has expired.
 
 
 In order to use this code for your own project, you must have to give the credits to the author/developer of this application/software.

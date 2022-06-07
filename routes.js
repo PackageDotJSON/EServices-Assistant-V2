@@ -187,7 +187,7 @@ router.get('/api/allowUserRights', (req, res) => {
 
       const fetchRights = `SELECT USER_CREDENTIALS."name", USER_CREDENTIALS_2."roles", USER_CREDENTIALS_2."email", USER_CREDENTIALS_2."routes"
                             FROM ESUSER.USER_CREDENTIALS INNER JOIN USER_CREDENTIALS_2 on USER_CREDENTIALS."email" = USER_CREDENTIALS_2."email"
-                            WHERE USER_CREDENTIALS."email" = ? ORDER BY "email"`;
+                            WHERE USER_CREDENTIALS."email" = ? ORDER BY "roles"`;
 
       db2.open(secp, (err, conn) => {
         if(!err)

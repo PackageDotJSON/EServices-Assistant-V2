@@ -11,11 +11,11 @@ export const ROUTES: Routes = [
     component: LoginComponent,
   },
   {
-    path: 'companylogs',
+    path: 'reports',
     canActivate: [AuthGuard],
     loadChildren: () =>
-      import('../modules/company-logs/company-logs.module').then(
-        (m) => m.CompanyLogsModule
+      import('../modules/reports/reports.module').then(
+        (m) => m.ReportsModule
       ),
   },
   {

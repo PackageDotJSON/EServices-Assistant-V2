@@ -2,10 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserAccess } from '../../services/login-service/login.service';
 import * as bootstrap from 'bootstrap';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { BASE_URL } from '../../constants/base-url.constant';
-import { USER_RIGHTS_API } from '../../enums/apis.enum';
 import { ROUTES_URL } from 'src/app/enums/routes.enum';
 import { HeaderService } from 'src/app/services/header-service/header.service';
 declare var $: any;
@@ -77,7 +74,7 @@ export class HeaderComponent implements OnInit {
         } else {
           this.routes = responseData;
           for(let i = 0; i < this.routes.length; i++) {
-            this.routes[i].routes = '/companylogs' + this.routes[i].routes;
+            this.routes[i].routes = ROUTES_URL.REPORTS_URL + this.routes[i].routes;
           }
         }
       }, (error) => {

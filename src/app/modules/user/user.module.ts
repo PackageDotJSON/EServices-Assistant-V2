@@ -5,9 +5,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { RequestLogService } from './services/request-log.service';
 
-import { AdminpanelComponent } from './adminpanel/adminpanel.component';
-import { UserprofileComponent } from './userprofile/userprofile.component';
-import { RequestlogComponent } from './requestlog/requestlog.component';
+import { AdminpanelComponent } from './admin-panel/admin-panel.component';
+import { UserprofileComponent } from './user-profile/user-profile.component';
+import { RequestlogComponent } from './request-log/request-log.component';
 
 const ROUTES: Routes = [
   {
