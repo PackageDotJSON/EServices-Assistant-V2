@@ -1,12 +1,14 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import * as CanvasJS from './canvasjs.min';
 import { UserAccess } from "../../../services/login-service/login.service";
 import * as bootstrap from "bootstrap";
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { BASE_URL } from '../../../constants/base-url.constant';
 import { CHANGE_COMPANY_OBJECT_API } from '../../../enums/apis.enum';
+import { Subscription } from 'rxjs';
+import { PROCESS_ERROR_FILE } from 'src/app/settings/app.settings';
 declare var $: any;
 
 
@@ -15,7 +17,7 @@ declare var $: any;
   templateUrl: './process-report-status-wise.component.html',
   styleUrls: ['./process-report-status-wise.component.css']
 })
-export class ProcessReportStatusWiseComponent implements OnInit {
+export class ProcessReportStatusWiseComponent implements OnInit, OnDestroy {
 
   proceedsData: any[] = [];
   processData: any[] = [];
@@ -33,6 +35,7 @@ export class ProcessReportStatusWiseComponent implements OnInit {
   countMark: number = 0;
   countIncorporate: number = 0;
   countReject: number = 0;
+  subscriber: Subscription[] = [];
 
 
   constructor(private http: HttpClient, private useraccess: UserAccess, private router: Router) { }
@@ -86,7 +89,7 @@ export class ProcessReportStatusWiseComponent implements OnInit {
 
   fetchErrorProcessData()
   {
-    this.http.get(BASE_URL + CHANGE_COMPANY_OBJECT_API.FETCH_ERROR_PROCESS_DATA)
+    this.subscriber.push(this.http.get(BASE_URL + CHANGE_COMPANY_OBJECT_API.FETCH_ERROR_PROCESS_DATA)
     .pipe(map(responseData => {
       if(JSON.stringify(responseData).includes('No Token Provided'))
       {
@@ -122,6 +125,7 @@ export class ProcessReportStatusWiseComponent implements OnInit {
       this.serverError = true;
       this.showServerAlert();
     })
+    );
   }
 
   fetchErrorTypes()
@@ -190,7 +194,7 @@ export class ProcessReportStatusWiseComponent implements OnInit {
 
   exportData()
   {
-    this.http.post(BASE_URL + CHANGE_COMPANY_OBJECT_API.EXPORT_TO_EXCEL, {value: this.proceedsData, fileName: 'ProcessReport'})
+    this.subscriber.push(this.http.post(BASE_URL + CHANGE_COMPANY_OBJECT_API.EXPORT_TO_EXCEL, {value: this.proceedsData, fileName: 'ProcessReport'})
     .subscribe(responseData => {
         if(JSON.stringify(responseData).includes("Written to Excel Successfully"))
         {
@@ -198,6 +202,33 @@ export class ProcessReportStatusWiseComponent implements OnInit {
           this.showExcelAlert();
         }
     })
+    )
+  }
+
+  downloadExcelFile() {
+    const params = new HttpParams().set('id', PROCESS_ERROR_FILE);
+    this.subscriber.push(this.http
+      .get(BASE_URL + CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE, {
+        params: params,
+        responseType: 'blob',
+      })
+      .pipe(
+        tap((res) => {
+          this.downloadFile(res, 'text/csv');
+        })
+      )
+      .subscribe()
+    );
+  }
+
+  downloadFile(data: any, type: string) {
+    let blob = new Blob([data], {type: type});
+    let url = window.URL.createObjectURL(blob);
+    let pwa = window.open(url);
+
+    if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
+      alert('Please disable your pop up blocker for better experience.');
+    }
   }
 
   hideServerAlert()
@@ -218,5 +249,9 @@ export class ProcessReportStatusWiseComponent implements OnInit {
   showExcelAlert()
   {
     $('#excelAlert').show()
+  }
+
+  ngOnDestroy(): void {
+    this.subscriber.forEach(item => item.unsubscribe());
   }
 }

@@ -13,6 +13,8 @@ const fastCsv = require('fast-csv');
 const ws = fs.createWriteStream('ProcessErrorFile.csv');
 const ws2 = fs.createWriteStream('BankUsageReportFile.csv');
 const xlsxFile = require('read-excel-file/node');
+const ExcelJS = require('exceljs');
+const workbook = new ExcelJS.Workbook();
 const moment = require('moment');
 const http = require('http');
 
@@ -165,6 +167,55 @@ function verifyLogin(samAccount, ipaddress)
 
   });
 
+}
+
+router.post('/api/forgotpassword', (req, res) => {
+
+  const email = req.body.userEmail.toUpperCase();
+  const searchDB = `SELECT UPPER ("email") FROM USER_CREDENTIALS WHERE UPPER ("email") = ?`;
+
+  db2.open(secp, (err, conn) => {
+    if(!err)
+      {
+        console.log("Connected Successfully");
+      }
+      else
+      {
+        console.log("Error occurred while connecting with DB2: " + err.message);
+      }
+
+
+      conn.query(searchDB, [email], (err, results) => {
+
+        if(!err) 
+        {
+          results.length === 0 ? res.send('Email does not exist'): res.send('Email found');
+        } 
+        else 
+        {
+          console.log("Error occurred while searching for all the data: " + err.message);
+        }
+
+        conn.close((err) => {
+
+          if(!err)
+          {
+              console.log("Connection closed with the database");
+          }
+          else
+          {
+              console.log("Error occurred while trying to close the connection with the database " + err.message);
+          }
+        })
+      });
+  });
+
+});
+
+function sendVerificationKey(res) {
+  const generatedKey = Math.floor(Math.random() * 9999) + 1000;
+  
+  res.status(200).json(generatedKey);
 }
 
 router.get('/api/allowUserRights', (req, res) => {
@@ -2728,13 +2779,11 @@ router.post('/api/exporttoExcel', (req, res) => {
           
           if(file === 'BankReport') {
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
-              console.log("Written to Excel Successfully");
-              res.json("Written to Excel Successfully");
+              res.send("Written to Excel Successfully");
             }).pipe(ws2);
           } else{
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
-              console.log("Written to Excel Successfully");
-              res.json("Written to Excel Successfully");
+              res.send("Written to Excel Successfully");
             }).pipe(ws);
           }
       }
@@ -2744,6 +2793,29 @@ router.post('/api/exporttoExcel', (req, res) => {
         res.json('Authorization Failed. Token Expired. Please Login Again.');
       }
     })
+});
+
+router.get('/api/downloadExcelFile', (req, res) => {
+  var options = {
+    root: path.join(__dirname),
+    dotfiles: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  }
+
+  var fileName = req.query.id;
+  res.sendFile(fileName, options, function (err) {
+    if (!err)
+    {
+      console.log('File sent successfully');
+    }
+    else
+    {
+      console.log('Error occurred while sending file: ' + err.message)
+    }
+  })
 });
 
 

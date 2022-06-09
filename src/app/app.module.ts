@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { RouterModule} from "@angular/router";
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
@@ -16,10 +16,11 @@ import { FooterComponent } from './components/footer/footer.component';
 import { ROUTES } from './routes/routes';
 
 import { HeaderService } from './services/header-service/header.service';
-import { UserAccess } from "./services/login-service/login.service";
-import { AuthGuard } from "./services/guards/auth.guard";
-import { HeaderInterceptor } from "./services/interceptor/http.interceptor";
-
+import { UserAccess } from './services/login-service/login.service';
+import { AuthGuard } from './services/guards/auth.guard';
+import { HeaderInterceptor } from './services/interceptor/http.interceptor';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ForgotPasswordService } from './services/forgot-password-service/forgot-password.service';
 
 @NgModule({
   declarations: [
@@ -30,15 +31,22 @@ import { HeaderInterceptor } from "./services/interceptor/http.interceptor";
     LogoutComponent,
     HeaderComponent,
     FooterComponent,
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot(ROUTES)
+    RouterModule.forRoot(ROUTES),
   ],
-  providers: [UserAccess, HeaderService, AuthGuard, {provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true}],
-  bootstrap: [AppComponent]
+  providers: [
+    UserAccess,
+    HeaderService,
+    ForgotPasswordService,
+    AuthGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

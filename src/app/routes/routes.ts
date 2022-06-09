@@ -4,11 +4,16 @@ import { LogoutComponent } from '../pages/logout/logout.component';
 import { HelpComponent } from '../pages/help/help.component';
 import { LandingPageComponent } from '../pages/landing-page/landing-page.component';
 import { AuthGuard } from '../services/guards/auth.guard';
+import { ForgotPasswordComponent } from '../pages/forgot-password/forgot-password.component';
 
 export const ROUTES: Routes = [
   {
     path: '',
     component: LoginComponent,
+  },
+  {
+    path: 'forgotpassword',
+    component: ForgotPasswordComponent
   },
   {
     path: 'reports',

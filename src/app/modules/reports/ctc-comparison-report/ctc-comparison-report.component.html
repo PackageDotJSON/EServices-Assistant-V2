@@ -3,6 +3,9 @@
       <div class="ribbon-content"><p>CTC Comparison Report</p></div>
     </div>
     <br><br><br><br><br>
+    <div class="column mr-auto">
+        <div id = "chartContainer" style = "height: 200px; width: 100%;"></div>
+    </div>
     <div class="table-responsive">
         <table class = "table table-striped table-hover table-bordered">
             <thead>
@@ -37,7 +40,7 @@
             <tbody>
                 <tr style = "font-size: 13px;" *ngFor = "let cReport of digitalCtcReport; let i = index">
                     <td>
-                        {{cReport?.DATE}}
+                        {{cReport?.DATE | date:'longDate'}}
                     </td>
                     <td>
                         {{cReport?.DIG_ISSUED}}
@@ -61,5 +64,6 @@
             </tbody>
         </table>
     </div>
+    <br /><br />
 </div>
   

@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ReportsService } from '../services/reports.service';
+import * as CanvasJS from './canvasjs.min';
 
 @Component({
   selector: 'app-ctc-comparison-report',
@@ -20,6 +21,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getCtcReport();
+    this.drawChart();
   }
 
   getCtcReport() {
@@ -27,6 +29,24 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
       this.digitalCtcReport = res[0];
       this.bankPortalData = res[1];
     })).subscribe();
+  }
+
+  drawChart()
+  {
+    let chart = new CanvasJS.Chart("chartContainer", {
+      animationEnabled: true,
+      exportEnabled: true,
+      data: [{
+        type: "pie",
+        indexLabel: "{label} - {y}",
+        dataPoints: [
+          { y: this.digitalCtcReport, label: this.digitalCtcReport },
+          { y: this.bankPortalData, label: this.bankPortalData },
+        ]
+      }]
+    });
+
+    chart.render();
   }
 
   ngOnDestroy() {

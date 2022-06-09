@@ -63,7 +63,7 @@
         <tr *ngFor = "let cData of companyData[0]; let i = index">
           <td>{{companyData[0][i][0]}}</td>
           <td>{{companyData[0][i][1]}}</td>
-          <td>{{companyData[0][i][2] ? companyData[0][i][2] : 'Null'}}</td>
+          <td>{{companyData[0][i][2] === 'F' ? 'Offline' : companyData[0][i][2] === 'O' ? 'Online' : 'Null'}}</td>
           <td>{{companyData[0][i][3]}}</td>
           <td></td>
         </tr>
@@ -88,7 +88,7 @@
         <tr *ngFor = "let cData of companyData[0]; let i = index">
           <td>{{companyData[0][i][0]}}</td>
           <td>{{companyData[0][i][1]}}</td>
-          <td>{{companyData[0][i][2] ? companyData[0][i][2] : 'Null'}}</td>
+          <td>{{companyData[0][i][2] === 'F' ? 'Offline' : companyData[0][i][2] === 'O' ? 'Online' : 'Null'}}</td>
           <td>{{companyData[0][i][3]}}</td>
           <td></td>
         </tr>

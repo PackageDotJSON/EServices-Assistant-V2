@@ -40,8 +40,8 @@
           <tr style = "font-size: 13px;" *ngFor = "let pData of proceedsData">
             <td>{{pData.PROCESS}}</td>
             <td>{{pData.NAME}}</td>
-            <td>{{pData.RECEIVED | date: 'dd/MM/yyyy, h:mm:ss a'}}</td>
-            <td>{{pData.LAST_MODIFIED | date: 'dd/MM/yyyy, h:mm:ss a'}}</td>
+            <td>{{pData.RECEIVED | date: 'dd/MMM/yyyy, h:mm:ss a'}}</td>
+            <td>{{pData.LAST_MODIFIED | date: 'dd/MMM/yyyy, h:mm:ss a'}}</td>
           </tr>
         </tbody>
       </table>
@@ -50,7 +50,7 @@
 
     <br><br>
     <div style = "float: right;">
-      <button class = "btn btn-outline-success" type="submit" name="button" (click) = "exportData()">Export to Excel <i class="bi bi-file-excel"></i></button>
+      <button class = "btn btn-outline-success" type="submit" name="button" (click) = "exportData(); downloadExcelFile()">Export to Excel <i class="bi bi-file-excel"></i></button>
       <br><br>
     </div>
 

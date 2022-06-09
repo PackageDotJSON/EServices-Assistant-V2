@@ -1,7 +1,8 @@
 // login api url 
 
 export const enum LOGIN_API {
-    LOGIN_API = '/api/login'
+    LOGIN_API = '/api/login',
+    FORGOT_PASSWORD_API = '/api/forgotpassword'
 }
 
 // admin route api urls
@@ -31,6 +32,7 @@ export const enum CHANGE_COMPANY_OBJECT_API {
     FETCH_ERROR_PROCEED_DATA = '/api/errorproceeds',
     FETCH_ERROR_PROCESS_DATA = '/api/errorprocesses',
     EXPORT_TO_EXCEL = '/api/exporttoExcel',
+    DOWNLOAD_EXCEL_FILE = '/api/downloadExcelFile'
 }
 
 // change company sector api urls

@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
   unAuthorized: boolean = false;
   serverError: boolean = false;
   isLoading: boolean = false;
+  readonly forgotPasswordUrl = ROUTES_URL.FORGOT_PASSWORD_URL;
 
   constructor(private router: Router, private http: HttpClient, private useraccess: UserAccess, private httpBackend: HttpBackend)
   {
