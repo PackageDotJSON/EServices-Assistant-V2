@@ -13,8 +13,7 @@ const fastCsv = require('fast-csv');
 const ws = fs.createWriteStream('ProcessErrorFile.csv');
 const ws2 = fs.createWriteStream('BankUsageReportFile.csv');
 const xlsxFile = require('read-excel-file/node');
-const ExcelJS = require('exceljs');
-const workbook = new ExcelJS.Workbook();
+const nodemailer = require('nodemailer');
 const moment = require('moment');
 const http = require('http');
 
