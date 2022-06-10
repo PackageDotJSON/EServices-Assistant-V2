@@ -2,7 +2,9 @@
 
 export const enum LOGIN_API {
     LOGIN_API = '/api/login',
-    FORGOT_PASSWORD_API = '/api/forgotpassword'
+    FORGOT_PASSWORD_API = '/api/forgotpassword',
+    VERIFY_CODE_API = '/api/verifycode',
+    CREATE_NEW_PASSWORD_API = '/api/createnewpassword'
 }
 
 // admin route api urls

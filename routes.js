@@ -16,6 +16,7 @@ const xlsxFile = require('read-excel-file/node');
 const nodemailer = require('nodemailer');
 const moment = require('moment');
 const http = require('http');
+let generatedKey;
 
 dotenv.config();
 
@@ -38,6 +39,23 @@ catch(err)
   console.log("Error occurred while trying to link to the Oracle Instant Client " + err.message);
   process.exit(1);
 }
+
+var transporter = nodemailer.createTransport({
+  host: "mail.secp.gov.pk",
+  port: 25,
+  secure: false,
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Server is ready to take our messages");
+  }
+});
 
 router.post('/api/login', async (req, res) => {
 
@@ -188,7 +206,7 @@ router.post('/api/forgotpassword', (req, res) => {
 
         if(!err) 
         {
-          results.length === 0 ? res.send('Email does not exist'): res.send('Email found');
+          results.length === 0 ? res.send('Email does not exist'): sendVerificationKey(res, email).catch(console.error);
         } 
         else 
         {
@@ -211,11 +229,86 @@ router.post('/api/forgotpassword', (req, res) => {
 
 });
 
-function sendVerificationKey(res) {
-  const generatedKey = Math.floor(Math.random() * 9999) + 1000;
+async function sendVerificationKey(res, email) {
+  generatedKey = Math.floor(Math.random() * 9999) + 1000;
   
-  res.status(200).json(generatedKey);
+  let info = await transporter.sendMail({
+    from: '"EServices Assistant" <admin@secp.gov.pk>', // sender address
+    to: `${email}`, // list of receivers
+    subject: "Verification Code", // Subject line
+    html: `<p>Your Verification Code is: <b>${generatedKey}</b> <br /><br /><i>This is an automatically generated email – please do not reply to it.</i></p>`, // html body
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+  // Preview only available when sending through an Ethereal account
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+
+  res.send('Email found');
 }
+
+router.post('/api/verifycode', (req, res) => {
+
+  const id = req.body.verificationCode;
+  id === generatedKey ? res.send('Verified') : res.send('Invalid'); 
+
+});
+
+
+router.put('/api/createnewpassword', (req, res) => {
+
+  const key = req.query.id;
+  const key2 = req.query.id2;
+  const key3 = req.query.id3;
+
+  var salt;
+  var hash;
+
+  salt = bcrypt.genSaltSync(saltRounds);
+  hash = bcrypt.hashSync(key, salt);
+ 
+  const updateData = `UPDATE USER_CREDENTIALS SET "${key3}" = ? WHERE "email" = ?`;
+
+  db2.open(secp, (err, conn) => {
+    if(!err)
+    {
+      console.log("Connected Successfully");
+    }
+    else
+    {
+      console.log("Error occurred while connecting to the database" + err.message);
+    }
+
+    
+    conn.query(updateData, [hash, key2], (err, results) => {
+
+      if(!err)
+      {
+        res.send("Data updated successfully");
+      }
+      else
+      {
+        console.log("Error occurred while updating the user profile data" + err.message);
+      }
+
+      conn.close((err) => {
+        if(!err)
+        {
+          console.log("Connection closed with the database");
+        }
+        else
+        {
+          console.log("Error occurred while trying to close the connection with the database" + err.message);
+        }
+
+      })
+    })
+          
+});
+
+});
 
 router.get('/api/allowUserRights', (req, res) => {
 
@@ -1191,13 +1284,16 @@ router.get('/api/combinedctcreport', (req, res) => {
       order by 1 asc
       for fetch only with UR`;
 
-      const bankPortal = `select B.ENTITY_NAME,count(*) Total_Searches from 
-      ESUSER.BANK_ENTITY_LOOKUP BE
-      left outer join
-      ESUSER.BANK_COMPANY_LOG B
-      ON BE.ENTITY_NAME=B.ENTITY_NAME
-      where  B.ENTITY_NAME !='The Bank' --AND B.COMPANY_TYPE='Public Limited Company'
-      group by b.ENTITY_NAME`;
+      const bankPortal = `select BL.ENTITY_NAME,monthname(date(BI.INVOICE_DATE)-1 month) Invoice_Month,BI.INVOICE_AMOUNT, BI.CHALLAN_NO,
+      date(BI.INVOICE_PERIOD_FROM) Invoice_Period_From, date(BI.INVOICE_PERIOD_TO) Invoice_Period_To,UP.USER_NAME,UP.USER_EMAIL,UP.USER_CELL
+      from ESUSER.BANK_INVOICE_SUMMARY BI, ESUSER.BANK_ENTITY_LOOKUP BL, ESUSER.USER_PROFILE_BANKS_OTHR_ENTITIES up
+      WHERE 
+      BI.IS_PAID !=1
+      AND BI.ENTITY_ID=BL.ENTITY_ID
+      AND BL.ENTITY_NAME=UP.NAME_OF_ENTITY
+      AND BL.ENTITY_NAME !='THE BANK'
+      AND UP.CREATED_BY in ('Hammad','Samreen','SECP')
+      ORDER BY BI.CHALLAN_NO`;
 
       db2.open(secp_5, (err, conn) => {
         if(!err)
