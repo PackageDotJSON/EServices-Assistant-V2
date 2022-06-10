@@ -36,9 +36,13 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   verificationCodeReceived = false;
   newPassword = null;
   verifyNewPassword = undefined;
-  passwordInvalid = false;
+  passwordError: string;
+  readonly loginUrl = ROUTES_URL.LOGIN_URL;
 
-  constructor(private password: ForgotPasswordService, private router: Router) {}
+  constructor(
+    private password: ForgotPasswordService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {}
 
@@ -64,7 +68,12 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   }
 
   submitVerificationCode() {
-    if (this.dataReceived === false || this.emailIsValid === false || this.isVerificationCodeValid) return;
+    if (
+      this.dataReceived === false ||
+      this.emailIsValid === false ||
+      this.isVerificationCodeValid
+    )
+      return;
 
     const payload = {
       verificationCode: this.verificationCode,
@@ -85,25 +94,32 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   }
 
   submitNewPassword() {
-    if(this.newPassword !== this.verifyNewPassword) {
-      this.passwordInvalid = true;
+    if (this.newPassword !== this.verifyNewPassword) {
+      this.isVerificationCodeValid && (this.passwordError = 'Passwords do not match');
       return;
     }
-    if(this.newPassword.length < 8) {
-      this.passwordInvalid = true;
+    if (this.newPassword.length < 8) {
+      this.isVerificationCodeValid && (this.passwordError = 'Password length should be minimum of 8 characters');
       return;
     }
 
-    this.passwordInvalid = false;
     const payload = {
       name: 'password',
       password: this.newPassword,
-      email: this.userEmail
-    }
+      email: this.userEmail,
+    };
 
-    this.subscriber.push(this.password.createNewPassword(payload).pipe(tap(res => {
-      res.includes('Data updated successfully') ? this.router.navigateByUrl(ROUTES_URL.LOGIN_URL): this.passwordInvalid = true;
-    })).subscribe()
+    this.subscriber.push(
+      this.password
+        .createNewPassword(payload)
+        .pipe(
+          tap((res) => {
+            res.includes('Data updated successfully')
+              ? this.router.navigateByUrl(ROUTES_URL.LOGIN_URL)
+              : this.passwordError = 'Cannot update password, try again later';
+          })
+        )
+        .subscribe()
     );
   }
 
