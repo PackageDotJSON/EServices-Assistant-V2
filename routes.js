@@ -1257,7 +1257,8 @@ router.get('/api/combinedctcreport', (req, res) => {
     const ctcReport = [];
     if(!err)
     {
-      const digitalCtc = `select (COALESCE(b.ApplyDate,a.ApplyDate)) as date, 
+      const digitalCtc = `select (COALESCE(b.ApplyDate,a.ApplyDate)) as date,
+      MONTHNAME(date(b.ApplyDate)) Invoice_Month,
       COALESCE(DigitalTotalFiled,0) Dig_Issued,COALESCE(DigitalPaidAmount,0) Dig_Amt,
       COALESCE(StandTotalFiled,0) Stand_Issued,COALESCE(StandPaidAmount,0) as Stand_Amt
       from (
@@ -1265,7 +1266,7 @@ router.get('/api/combinedctcreport', (req, res) => {
       FROM SECP.BANK_CHALLAN_FORM BCF  INNER JOIN 
       (
       SELECT UP.USER_PROCESS_ID, DATE(UP.END_DATE) AS DT from SECP.USER_PROCESSES UP WHERE UP.STATUS = 'Closed' 
-      and DATE(UP.END_DATE) >= DATE('2021-09-08') and UP.PROCESS_ID = 17001
+      and DATE(UP.END_DATE) >= DATE('2021-03-01') and UP.PROCESS_ID = 17001
       )
       USER
       ON BCF.USER_PROCESS_ID = USER.USER_PROCESS_ID
@@ -1274,7 +1275,7 @@ router.get('/api/combinedctcreport', (req, res) => {
             SELECT DATE(USER.DT) as ApplyDate, SUM(BCF.FEEPD) as DigitalPaidAmount , Count(*) as DigitalTotalFiled 
             FROM SECP.BANK_CHALLAN_FORM BCF  INNER JOIN (
             SELECT UP.USER_PROCESS_ID,DATE(UP.END_DATE) AS DT from SECP.USER_PROCESSES UP WHERE UP.STATUS = 'Closed' 
-            and DATE(UP.END_DATE) >= DATE('2021-09-08') and UP.PROCESS_ID = 17003
+            and DATE(UP.END_DATE) >= DATE('2021-03-01') and UP.PROCESS_ID = 17003
       )
       USER
       ON BCF.USER_PROCESS_ID = USER.USER_PROCESS_ID

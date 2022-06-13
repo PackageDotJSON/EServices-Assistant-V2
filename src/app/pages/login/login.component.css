@@ -91,3 +91,6 @@
 .jumbotron-fluid{
      margin-top: 12%;
 }
+#forgot-password:hover{
+     text-decoration: underline;
+}

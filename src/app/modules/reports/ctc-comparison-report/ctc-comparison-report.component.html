@@ -2,10 +2,58 @@
   <div class="ribbon">
     <div class="ribbon-content"><p>CTC Comparison Report</p></div>
   </div>
-  <br /><br /><br /><br /><br />
-  <div class="column mr-auto">
-    <div id="chartContainer" style="height: 200px; width: 100%"></div>
+  <br /><br /><br /><br />
+  <div
+    class="col-xs-14 col-sm-14 col-md-12 col-lg-12 col-xl-12"
+    style="margin: auto"
+  >
+    <div class="form-group">
+      <div class="input-group" style="width: 30%; margin: auto">
+        <i class="input-group-addon" style="font-size: 1.3rem; color: white">
+          &nbsp; <i class="bi bi-search"></i> &nbsp;
+        </i>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="startDateKey"
+          placeholder="Start Date"
+        />
+        &nbsp;
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="endDateKey"
+          placeholder="End Date"
+        />
+        &nbsp;
+        <button
+          type="submit"
+          class="btn btn-outline-success"
+          name="button"
+          (click)="filterCtcComparisonReport()"
+        >
+          Search
+        </button>
+      </div>
+    </div>
   </div>
+
+  <br>
+
+  <div class="row" style="width: 68%">
+    <div class="column mr-auto">
+      <div id="chartContainer" style="height: 200px; width: 100%"></div>
+    </div>
+    <div class="column mx-auto">
+      <div id="chartContainer2" style="height: 200px; width: 100%"></div>
+    </div>
+    <div class="column ml-auto">
+      <div id="chartContainer3" style="height: 200px; width: 100%"></div>
+    </div>
+  </div>
+
+  <br>
+
   <div class="table-responsive">
     <table class="table table-striped table-hover table-bordered">
       <thead>
@@ -18,9 +66,7 @@
           <th scope="col">Digital Amount</th>
           <th scope="col">Standard CTC Issued</th>
           <th scope="col">Standard Amount</th>
-          <th scope="col">Entity Name</th>
-          <th scope="col">Challan Number</th>
-          <th scope="col">Invoice Month</th>
+          <th scope="col">Month</th>
           <th scope="col">Invoice Amount</th>
         </tr>
       </thead>
@@ -28,38 +74,32 @@
       <tbody>
         <tr
           style="font-size: 13px"
-          *ngFor="let cReport of digitalCtcReport; let i = index"
+          *ngFor="let bReport of bankPortalData; let i = index"
         >
           <td>
-            {{ cReport?.DATE | date: "longDate" }}
+            {{ digitalCtcReport[i]?.INVOICE_MONTH }}
           </td>
           <td>
-            {{ cReport?.DIG_ISSUED }}
+            {{ digitalCtcReport[i]?.DIG_ISSUED }}
           </td>
           <td>
-            {{ cReport?.DIG_AMT | currency: "":"" }}
+            {{ digitalCtcReport[i]?.DIG_AMT | currency: "":"" }}
           </td>
           <td>
-            {{ cReport?.STAND_ISSUED }}
+            {{ digitalCtcReport[i]?.STAND_ISSUED }}
           </td>
           <td>
-            {{ cReport?.STAND_AMT | currency: "":"" }}
+            {{ digitalCtcReport[i]?.STAND_AMT | currency: "":"" }}
           </td>
           <td>
-            {{ bankPortalData[i]?.ENTITY_NAME }}
+            {{ bReport?.month }}
           </td>
           <td>
-            {{ bankPortalData[i]?.CHALLAN_NO }}
-          </td>
-          <td>
-            {{ bankPortalData[i]?.INVOICE_MONTH }}
-          </td>
-          <td>
-            {{ bankPortalData[i]?.INVOICE_AMOUNT }}
+            {{ bReport?.value | currency: "":"" }}
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <br /><br />
+  <br /><br /><br />
 </div>
