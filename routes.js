@@ -12,6 +12,7 @@ const fs = require('fs');
 const fastCsv = require('fast-csv');
 const ws = fs.createWriteStream('ProcessErrorFile.csv');
 const ws2 = fs.createWriteStream('BankUsageReportFile.csv');
+const ws3 = fs.createWriteStream('CtcComparisonFile.csv');
 const xlsxFile = require('read-excel-file/node');
 const nodemailer = require('nodemailer');
 const moment = require('moment');
@@ -235,8 +236,9 @@ async function sendVerificationKey(res, email) {
   let info = await transporter.sendMail({
     from: '"EServices Assistant" <admin@secp.gov.pk>', // sender address
     to: `${email}`, // list of receivers
-    subject: "Verification Code", // Subject line
-    html: `<p>Your Verification Code is: <b>${generatedKey}</b> <br /><br /><i>This is an automatically generated email – please do not reply to it.</i></p>`, // html body
+    subject: "Password Reset", // Subject line
+    html: `<p>Assalam-u-Alaikum, <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; We have received a request to reset the password for your EServices Assistant account. To reset your password, copy and paste the verification code into the EServices Assistant application. <br />
+    <br />Your <b>Verification Code</b> is: <h3>${generatedKey}</h3> <br /><br /><i>This is an automatically generated email – please do not reply to it.</i></p>`, // html body
   });
 
   console.log("Message sent: %s", info.messageId);
@@ -2877,7 +2879,12 @@ router.post('/api/exporttoExcel', (req, res) => {
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");
             }).pipe(ws2);
-          } else{
+          } else if(file === 'CtcComparisonReport') {
+            fastCsv.write(exportData, {headers: true}).on("finish", function(){
+              res.send("Written to Excel Successfully");
+            }).pipe(ws3);
+          } 
+          else{
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");
             }).pipe(ws);

@@ -3,3 +3,7 @@ html, body{
     font-family: 'Raleway', sans-serif;
     font-size: 14px;
 }
+
+tbody{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}

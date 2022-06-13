@@ -38,8 +38,20 @@
     </div>
   </div>
 
-  <br>
+  <br />
+  <div class="row" style="width: 88%;">
+    <div style="margin-left: 5rem;">
+      <span><b><u>Digital CTC</u></b></span>
+    </div>
+    <div style="margin-left: 31rem;">
+      <span><b><u>Standard CTC</u></b></span>
+    </div>
+    <div style="margin-left: 30rem;">
+      <span><b><u>Bank Portal</u></b></span>
+    </div>
+  </div>
 
+  <br />
   <div class="row" style="width: 68%">
     <div class="column mr-auto">
       <div id="chartContainer" style="height: 200px; width: 100%"></div>
@@ -52,7 +64,7 @@
     </div>
   </div>
 
-  <br>
+  <br /><br />
 
   <div class="table-responsive">
     <table class="table table-striped table-hover table-bordered">
@@ -61,11 +73,11 @@
         <th colspan="2" style="text-align: center">Standard CTC</th>
         <th colspan="4" style="text-align: center">Bank Portal</th>
         <tr style="font-size: 15px">
-          <th scope="col">Date</th>
+          <th scope="col">Month</th>
           <th scope="col">Digital CTC Issued</th>
-          <th scope="col">Digital Amount</th>
+          <th scope="col">Digital CTC Revenue</th>
           <th scope="col">Standard CTC Issued</th>
-          <th scope="col">Standard Amount</th>
+          <th scope="col">Standard CTC Revenue</th>
           <th scope="col">Month</th>
           <th scope="col">Invoice Amount</th>
         </tr>
@@ -73,33 +85,66 @@
 
       <tbody>
         <tr
-          style="font-size: 13px"
+          style="font-size: 13px;"
           *ngFor="let bReport of bankPortalData; let i = index"
         >
           <td>
-            {{ digitalCtcReport[i]?.INVOICE_MONTH }}
+            {{ digitalCtcReport[i]?.INVOICE_MONTH + '-' + digitalCtcReport[i]?.YEAR }}
           </td>
           <td>
             {{ digitalCtcReport[i]?.DIG_ISSUED }}
           </td>
           <td>
-            {{ digitalCtcReport[i]?.DIG_AMT | currency: "":"" }}
+            {{ digitalCtcReport[i]?.DIG_AMT | currency: "":"":"1.0-0" }}
           </td>
           <td>
             {{ digitalCtcReport[i]?.STAND_ISSUED }}
           </td>
           <td>
-            {{ digitalCtcReport[i]?.STAND_AMT | currency: "":"" }}
+            {{ digitalCtcReport[i]?.STAND_AMT | currency: "":"":"1.0-0" }}
           </td>
           <td>
-            {{ bReport?.month }}
+            {{ bReport?.month + '-' + bReport?.year }}
           </td>
           <td>
-            {{ bReport?.value | currency: "":"" }}
+            {{ bReport?.value | currency: "":"":"1.0-0" }}
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <br /><br /><br />
+  <br /><br />
+  <div style="float: right">
+    <button
+      class="btn btn-outline-success"
+      type="submit"
+      name="button"
+      (click)="exportData(); downloadExcelFile();"
+    >
+      Export to Excel <i class="bi bi-file-excel"></i>
+    </button>
+    <br /><br />
+  </div>
+  <ng-container *ngIf="writeToExcelAlert">
+    <br /><br />
+    <div
+      class="alert alert-success alert-dismissible"
+      id="excelAlert"
+      role="alert"
+      *ngIf="writeToExcelAlert"
+      style="margin: auto; width: 30%"
+    >
+      <button
+        type="button"
+        aria-hidden="true"
+        (click)="hideExcelAlert()"
+        class="close"
+        aria-label="Close"
+      >
+        <i class="bi bi-x"></i>
+      </button>
+      <span> <b> Success - </b> Exported to Excel Successfully! </span>
+    </div>
+  </ng-container>
+  <br /><br /><br /><br />
 </div>
