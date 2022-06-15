@@ -184,7 +184,7 @@ export class AdminpanelComponent implements OnInit {
   {
     this.adminRights = rightsAdmin;
     this.subAdminData = [];
-    this.subAdminAllData = [{roles: 'Search Bank Transaction Log'}, {roles: 'Delete Company User'}, {roles: 'Update Company Officers'}, {roles: 'Change Company Address'}, {roles: 'CTC Filing Status Report'}, {roles: 'Applied CTC Report'}, {roles: 'Change Company Name'}, {roles: 'Process Report - Status Wise'}, {roles: 'View Company Records'}, {roles: 'View Company Submission Mode'}, {roles: 'Check Company User'}, {roles: 'CTC Comparison Report'}, {roles: 'Bank Usage Report'}, {roles: 'Data Sharing Monitoring Report'}]
+    this.subAdminAllData = [{roles: 'Search Bank Transaction Log'}, {roles: 'CTC Filing Status Report'}, {roles: 'Applied CTC Report'}, {roles: 'Process Report - Status Wise'}, {roles: 'View Company Records'}, {roles: 'View Company Submission Mode'}, {roles: 'CTC Comparison Report'}, {roles: 'Bank Usage Report'}, {roles: 'Data Sharing Monitoring Report'}]
     const params = new HttpParams().set('id', userMail)
     this.http.get(BASE_URL + ADMIN_API.SUB_ADMIN_DATA, {params})
     .pipe(map(responseData => {
