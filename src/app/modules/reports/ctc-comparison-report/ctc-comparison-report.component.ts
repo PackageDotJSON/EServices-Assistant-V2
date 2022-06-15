@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { BASE_URL } from 'src/app/constants/base-url.constant';
 import { CHANGE_COMPANY_OBJECT_API } from 'src/app/enums/apis.enum';
-import { BANK_USAGE_REPORT_FILE, CTC_COMPARISON_REPORT_FILE } from 'src/app/settings/app.settings';
+import { BANK_USAGE_REPORT_FILE, CTC_COMPARISON_REPORT_FILE, END_KEY, START_KEY } from 'src/app/settings/app.settings';
 import { ReportsService } from '../services/reports.service';
 import * as CanvasJS from './canvasjs.min';
 import * as bootstrap from 'bootstrap';
@@ -21,8 +21,8 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   bankPortalData = [];
   digitalAmount = 0;
   sumOfDigitalAmounts: number[] = [];
-  startDateKey: string;
-  endDateKey: string;
+  startDateKey = START_KEY;
+  endDateKey = END_KEY;
   ctcYear = [2021];
   bankYear = [2021];
   writeToExcelAlert = false;
@@ -35,7 +35,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
 
   getCtcReport() {
     this.subscriber.push(this.reportsService
-      .fetchCombinedCtcReport()
+      .fetchCombinedCtcReport(this.startDateKey, this.endDateKey)
       .pipe(
         tap((res) => {
           this.calculateDigitalCtcReport(res[0]);
@@ -93,6 +93,10 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
           STAND_ISSUED: standardIssuedTotal,
           YEAR: ctcReport[i]['DATE'].split('-')[0]
         });
+        standardAmountTotal = 0;
+        standardIssuedTotal = 0;
+        digitalAmountTotal = 0;
+        digitalIssuedTotal = 0;
       }
     }
   }
@@ -330,8 +334,6 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
     chart2.render();
     chart3.render();
   }
-
-  filterCtcComparisonReport() {}
 
   exportData() {
     let comparisonReport = {...this.bankPortalData, ...this.digitalCtcReport};

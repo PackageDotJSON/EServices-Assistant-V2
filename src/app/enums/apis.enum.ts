@@ -102,3 +102,9 @@ export const enum COMBINED_CTC_REPORT_API {
 export const enum BANK_USAGE_REPORT_API {
     FETCH_BANK_USAGE_REPORT = '/api/getbankusagereport'
 }
+
+//data sharing monitoring report
+
+export const enum DATA_SHARING_REPORT_API {
+    FETCH_DATA_SHARING_REPORT = '/api/getdatasharingreport'
+}

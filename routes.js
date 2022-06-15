@@ -30,6 +30,9 @@ var secp_3 = Buffer.from(process.env.SECP3DBKey, 'base64').toString('ascii');
 var secp_4 = Buffer.from(process.env.SECP4DBKey, 'base64').toString('ascii');
 var secp_5 = Buffer.from(process.env.SECP5DBKey, 'base64').toString('ascii');
 var secp_6 = Buffer.from(process.env.SECP6DBKey, 'base64').toString('ascii');
+var oracleUser = Buffer.from(process.env.ORACLEDB_USER, 'base64').toString('ascii');
+var oraclePassword = Buffer.from(process.env.ORACLEDB_PASSWORD, 'base64').toString('ascii');
+var oracleConnectString = Buffer.from(process.env.ORACLEDB_CONNECT_STRING, 'base64').toString('ascii');
 
 try
 {
@@ -42,8 +45,8 @@ catch(err)
 }
 
 var transporter = nodemailer.createTransport({
-  host: "mail.secp.gov.pk",
-  port: 25,
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
   secure: false,
   tls: {
     rejectUnauthorized: false
@@ -1256,6 +1259,11 @@ router.get('/api/combinedctcreport', (req, res) => {
 
   jwt.verify(token, secret, function(err, decoded){
 
+    const startDate = req.query.id;
+    const endDate = req.query.id2;
+
+    console.log(startDate, endDate);
+
     const ctcReport = [];
     if(!err)
     {
@@ -1268,7 +1276,7 @@ router.get('/api/combinedctcreport', (req, res) => {
       FROM SECP.BANK_CHALLAN_FORM BCF  INNER JOIN 
       (
       SELECT UP.USER_PROCESS_ID, DATE(UP.END_DATE) AS DT from SECP.USER_PROCESSES UP WHERE UP.STATUS = 'Closed' 
-      and DATE(UP.END_DATE) >= DATE('2021-03-01') and UP.PROCESS_ID = 17001
+      and DATE(UP.END_DATE) >= DATE('${startDate}') AND DATE(UP.END_DATE) <= DATE('${endDate}') and UP.PROCESS_ID = 17001
       )
       USER
       ON BCF.USER_PROCESS_ID = USER.USER_PROCESS_ID
@@ -1277,7 +1285,7 @@ router.get('/api/combinedctcreport', (req, res) => {
             SELECT DATE(USER.DT) as ApplyDate, SUM(BCF.FEEPD) as DigitalPaidAmount , Count(*) as DigitalTotalFiled 
             FROM SECP.BANK_CHALLAN_FORM BCF  INNER JOIN (
             SELECT UP.USER_PROCESS_ID,DATE(UP.END_DATE) AS DT from SECP.USER_PROCESSES UP WHERE UP.STATUS = 'Closed' 
-            and DATE(UP.END_DATE) >= DATE('2021-03-01') and UP.PROCESS_ID = 17003
+            and DATE(UP.END_DATE) >= DATE('${startDate}') AND DATE(UP.END_DATE) <= DATE('${endDate}') and UP.PROCESS_ID = 17003
       )
       USER
       ON BCF.USER_PROCESS_ID = USER.USER_PROCESS_ID
@@ -1296,6 +1304,8 @@ router.get('/api/combinedctcreport', (req, res) => {
       AND BL.ENTITY_NAME=UP.NAME_OF_ENTITY
       AND BL.ENTITY_NAME !='THE BANK'
       AND UP.CREATED_BY in ('Hammad','Samreen','SECP')
+      AND date(BI.INVOICE_PERIOD_FROM) >= '${startDate}' 
+      AND date(BI.INVOICE_PERIOD_TO) <= '${endDate}'
       ORDER BY BI.CHALLAN_NO`;
 
       db2.open(secp_5, (err, conn) => {
@@ -1383,8 +1393,7 @@ router.post('/api/getbankusagereport', (req, res) => {
   jwt.verify(token, secret, function(err, decoded){
     if(!err)
     { 
-      let startDate = req.body.startDate;
-      let endDate = req.body.endDate;
+      const { startDate, endDate } = req.body;
 
       const bankPortal = `select B.ENTITY_NAME,count(*) Total_Searches from 
       ESUSER.BANK_ENTITY_LOOKUP BE
@@ -1436,6 +1445,130 @@ router.post('/api/getbankusagereport', (req, res) => {
 
   });
 
+});
+
+
+router.get('/api/getdatasharingreport', (req, res) => {
+  
+  const token = req.get('key');
+
+  if(!token) {
+    res.send("No Token Provided");
+    return;
+  }
+
+  jwt.verify(token, secret, function(err, decoded){
+    if(!err)
+    { 
+      queryResult = [];
+      const dataSharingMonitorDB2 = `SELECT * FROM (
+
+        SELECT MAX(EOBI_PUSHING_DATE) as "DATES", 'EOBI PUSH DATE' as "ENTITIES" FROM SECP.EOBI_DATA WHERE IS_POSTED_TO_EOBI = 1 AND POSTING_STATUS = 1
+        UNION ALL
+        SELECT MAX(CREATED_WHEN), 'EOBI RECEIVE DATE' FROM SECP.API_CALL_LOG WHERE CALL_TYPE = 'EOBI'
+        UNION ALL
+        SELECT MAX(CREATED_WHEN), 'PITB PUSH DATE' FROM SECP.FBR_COMPANY_DATA_FOR_INTEGRATION WHERE IS_PITB_POSTED = 1
+        UNION ALL
+        SELECT MAX(CREATED_WHEN), 'PITB RECEIVE DATE' FROM SECP.PITB_REG_INFO
+        UNION ALL
+        SELECT MAX(CREATED_WHEN), 'FBR PUSH DATE' FROM SECP.FBR_COMPANY_DATA_FOR_INTEGRATION WHERE IS_FBR_POSTED = 1
+        
+        ) FOR FETCH ONLY WITH UR`;
+
+      const dataSharingMonitorOracle = `SELECT * FROM (
+
+        SELECT MAX(TIMESTAMP) as "DATES", 'FBR RECEIVE DATE' as "ENTITIES" FROM WEBSERVICE.FBR_COMPANY_NTN WHERE INFO_TYPE ='Company' AND COMPANY_NTN IS NOT NULL
+        UNION ALL
+        SELECT MAX(CREATED_WHEN), 'FMU DATE' FROM API_CALL_LOG LOGG WHERE USER_NAME = 'FMU'
+        UNION ALL
+        SELECT MAX(CREATED_WHEN), 'BOI DATE' FROM API_CALL_LOG LOGG WHERE USER_NAME = 'BOI'
+        UNION ALL
+        SELECT MAX(CREATED_WHEN), 'STR MORTGAGE DATE' FROM API_CALL_LOG LOGG WHERE USER_NAME =  'STR'
+        
+        )`;
+
+
+      db2.open(secp_5, (err, conn) => {
+        if(!err)
+        {
+          console.log("Connected Successfully");
+        }
+        else
+        {
+          console.log("Error occurred while connecting to the database" + err.message);
+        }
+
+        conn.query(dataSharingMonitorDB2, (err, results) => {
+          if(!err)
+          {
+           queryResult.push(results);
+
+            var connection = oracledb.getConnection({
+              user: oracleUser,
+              password: oraclePassword,
+              connectString: oracleConnectString
+            }, (err, conn) => {
+
+              if(!err)
+              {
+                console.log("Connected to the database successfully");
+              }
+              else
+              {
+                console.log("Error occurred while trying to connect to the database: " + err.message);
+              }
+
+            conn.execute(dataSharingMonitorOracle, (err, results) => {
+
+              if(!err)
+              {
+                queryResult.push(results.rows);
+                res.send(queryResult);
+              }
+              else
+              {
+                console.log("Error occurred while searching the company record by number in Oracle " + err.message);
+              }
+
+              conn.release((err) => {
+                if(!err)
+                {
+                  console.log("Connection closed with the database");
+                }
+                else
+                {
+                  console.log("Error occurred while closing the connection with the database " + err.message);
+                }
+              })
+            })
+          })
+
+          }
+          else
+          {
+            console.log("Error occurred while deleting the data in log requests" + err.message);
+          }
+
+          conn.close((err) => {
+            if(!err)
+            {
+              console.log("Connection closed with the database");
+            }
+            else
+            {
+              console.log("Error occurred while trying to close the connection with the database" + err.message);
+            }
+          })
+        })
+      })
+    }
+
+    else
+    {
+      res.json('Authorization Failed. Token Expired. Please Login Again.');
+    }
+
+  });
 });
 
 router.put('/api/updateProfile', (req, res) => {
@@ -2671,9 +2804,9 @@ router.get('/api/searchCompanyByNo', (req, res) => {
           const userKey = JSON.parse(req.query.id);
 
           var connection = oracledb.getConnection({
-            user: process.env.ORACLEDB_USER,
-            password: process.env.ORACLEDB_PASSWORD,
-            connectString: process.env.ORACLEDB_CONNECT_STRING
+            user: oracleUser,
+            password: oraclePassword,
+            connectString: oracleConnectString
           }, (err, conn) => {
 
             if(!err)
@@ -2745,9 +2878,9 @@ router.get('/api/searchCompanyByName', (req, res) => {
           const userKey = req.query.id.toUpperCase();
 
           var connection = oracledb.getConnection({
-            user: process.env.ORACLEDB_USER,
-            password: process.env.ORACLEDB_PASSWORD,
-            connectString: process.env.ORACLEDB_CONNECT_STRING
+            user: oracleUser,
+            password: oraclePassword,
+            connectString: oracleConnectString
           }, (err, conn) => {
             if(!err)
             {
@@ -2809,9 +2942,9 @@ router.get('/api/getCompaniesList', (req, res) => {
         if(!err)
         {
           var connection = oracledb.getConnection({
-            user: process.env.ORACLEDB_USER,
-            password: process.env.ORACLEDB_PASSWORD,
-            connectString: process.env.ORACLEDB_CONNECT_STRING
+            user: oracleUser,
+            password: oraclePassword,
+            connectString: oracleConnectString
           }, (err, conn) => {
             if(!err)
             {

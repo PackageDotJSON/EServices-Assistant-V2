@@ -13,6 +13,7 @@ import { CTCFilingStatusReportComponent } from './ctc-filing-status-report/ctc-f
 import { ProcessReportStatusWiseComponent } from './process-report-status-wise/process-report-status-wise.component';
 import { ViewCompanyRecordsComponent } from './view-company-records/view-company-records.component';
 import { ViewCompanySubmissionModeComponent } from 'src/app/modules/reports/view-company-submission-mode/view-company-submission-mode.component';
+import { DataSharingMonitoringReportComponent } from './data-sharing-monitoring-report/data-sharing-monitoring-report.component';
 
 import { ReportsService } from './services/reports.service';
 
@@ -27,6 +28,7 @@ import { ReportsService } from './services/reports.service';
     ProcessReportStatusWiseComponent,
     ViewCompanyRecordsComponent,
     ViewCompanySubmissionModeComponent,
+    DataSharingMonitoringReportComponent,
   ],
   imports: [CommonModule, FormsModule, RouterModule.forChild(ROUTES)],
   providers: [ReportsService],

@@ -8,7 +8,7 @@ import { CTCFilingStatusReportComponent } from '../ctc-filing-status-report/ctc-
 import { ProcessReportStatusWiseComponent } from '../process-report-status-wise/process-report-status-wise.component';
 import { ViewCompanyRecordsComponent } from '../view-company-records/view-company-records.component';
 import { ViewCompanySubmissionModeComponent } from '../view-company-submission-mode/view-company-submission-mode.component';
-
+import { DataSharingMonitoringReportComponent } from '../data-sharing-monitoring-report/data-sharing-monitoring-report.component';
 
 export const ROUTES: Routes = [
   {
@@ -40,6 +40,10 @@ export const ROUTES: Routes = [
         path: 'viewcompanysubmissionmode',
         component: ViewCompanySubmissionModeComponent,
       },
+      {
+        path: 'datasharingmonitoringreport',
+        component: DataSharingMonitoringReportComponent
+      }
     ],
   },
 ];
