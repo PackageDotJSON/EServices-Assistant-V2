@@ -34,6 +34,8 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   }
 
   getCtcReport() {
+    this.digitalCtcReport = [];
+    this.bankPortalData = [];
     this.subscriber.push(this.reportsService
       .fetchCombinedCtcReport(this.startDateKey, this.endDateKey)
       .pipe(

@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -46,6 +47,7 @@ import { ForgotPasswordService } from './services/forgot-password-service/forgot
     ForgotPasswordService,
     AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
+    [{provide: LocationStrategy, useClass: HashLocationStrategy}]
   ],
   bootstrap: [AppComponent],
 })

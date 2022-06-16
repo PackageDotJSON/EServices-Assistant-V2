@@ -51,9 +51,10 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
         .pipe(
           tap((res) => {
             if (res) {
-              this.isVerificationCodeValid = res.verificationcodevalid;
-              this.verificationCodeReceived = res.verificationcodevalid;
-              this.emailIsValid = res.verificationcodevalid;
+              this.isVerificationCodeValid =
+                this.verificationCodeReceived =
+                this.emailIsValid =
+                  res.verificationcodevalid;
               this.userEmail = res.useremail;
             }
           })
