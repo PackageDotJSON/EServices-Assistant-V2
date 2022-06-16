@@ -9,7 +9,7 @@ import {
 import { tap } from 'rxjs/operators';
 import { ForgotPasswordService } from 'src/app/services/forgot-password-service/forgot-password.service';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_URL } from 'src/app/enums/routes.enum';
 
 @Component({
@@ -41,10 +41,26 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
   constructor(
     private password: ForgotPasswordService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.subscriber.push(
+      this.activatedRoute.queryParams
+        .pipe(
+          tap((res) => {
+            if (res) {
+              this.isVerificationCodeValid = res.verificationcodevalid;
+              this.verificationCodeReceived = res.verificationcodevalid;
+              this.emailIsValid = res.verificationcodevalid;
+              this.userEmail = res.useremail;
+            }
+          })
+        )
+        .subscribe()
+    );
+  }
 
   onForgotPasswordSubmit() {
     if (this.dataReceived === true && this.emailIsValid === true) return;
@@ -95,11 +111,14 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
   submitNewPassword() {
     if (this.newPassword !== this.verifyNewPassword) {
-      this.isVerificationCodeValid && (this.passwordError = 'Passwords do not match');
+      this.isVerificationCodeValid &&
+        (this.passwordError = 'Passwords do not match');
       return;
     }
     if (this.newPassword.length < 8) {
-      this.isVerificationCodeValid && (this.passwordError = 'Password length should be minimum of 8 characters');
+      this.isVerificationCodeValid &&
+        (this.passwordError =
+          'Password length should be minimum of 8 characters');
       return;
     }
 
@@ -116,7 +135,8 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
           tap((res) => {
             res.includes('Data updated successfully')
               ? this.router.navigateByUrl(ROUTES_URL.LOGIN_URL)
-              : this.passwordError = 'Cannot update password, try again later';
+              : (this.passwordError =
+                  'Cannot update password, try again later');
           })
         )
         .subscribe()

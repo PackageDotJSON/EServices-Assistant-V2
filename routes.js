@@ -235,13 +235,19 @@ router.post('/api/forgotpassword', (req, res) => {
 
 async function sendVerificationKey(res, email) {
   generatedKey = Math.floor(Math.random() * 9999) + 1000;
-  
+  email = email.toLowerCase();
   let info = await transporter.sendMail({
     from: '"EServices Assistant" <admin@secp.gov.pk>', // sender address
     to: `${email}`, // list of receivers
     subject: "Password Reset", // Subject line
-    html: `<p>Assalam-u-Alaikum, <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; We have received a request to reset the password for your EServices Assistant account. To reset your password, copy and paste the verification code into the EServices Assistant application. <br />
-    <br />Your <b>Verification Code</b> is: <h3>${generatedKey}</h3> <br /><br /><i>This is an automatically generated email – please do not reply to it.</i></p>`, // html body
+    html: `<p>Assalam-u-Alaikum, <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; We have received a request to reset the password for your EServices Assistant account. 
+    To reset your password, copy and paste the verification code into the EServices Assistant application. <br />
+    <br />Your <b>Verification Code</b> is: <h3>${generatedKey}</h3> Or, you can click on the link below: <br /><br />
+    <a href="http://srwamp:3000/forgotpassword?verificationcodevalid=true&useremail=${email}">http://srwamp:3000/forgotpassword?verificationCodeReceived=true&useremail=${email}</a>
+    <br /><br /><i>
+    This is an automatically generated email – 
+    please do not reply to it.</i></p>`, // html body
   });
 
   console.log("Message sent: %s", info.messageId);
