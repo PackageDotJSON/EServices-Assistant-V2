@@ -66,6 +66,8 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   onForgotPasswordSubmit() {
     if (this.dataReceived === true && this.emailIsValid === true) return;
 
+    if(this.isVerificationCodeValid = this.verificationCodeReceived = this.emailIsValid === true) return;
+
     const payload = {
       userEmail: this.userEmail,
     };
