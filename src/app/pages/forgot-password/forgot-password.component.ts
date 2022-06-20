@@ -34,8 +34,8 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   verificationCode: number;
   isVerificationCodeValid = false;
   verificationCodeReceived = false;
-  newPassword = null;
-  verifyNewPassword = undefined;
+  newPassword = undefined;
+  verifyNewPassword = null;
   passwordError: string;
   readonly loginUrl = ROUTES_URL.LOGIN_URL;
 
@@ -66,7 +66,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   onForgotPasswordSubmit() {
     if (this.dataReceived === true && this.emailIsValid === true) return;
 
-    if(this.isVerificationCodeValid = this.verificationCodeReceived = this.emailIsValid === true) return;
+    if(this.newPassword?.length > 0) return;
 
     const payload = {
       userEmail: this.userEmail,
@@ -118,7 +118,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
         (this.passwordError = 'Passwords do not match');
       return;
     }
-    if (this.newPassword.length < 8) {
+    if (this.newPassword?.length < 8) {
       this.isVerificationCodeValid &&
         (this.passwordError =
           'Password length should be minimum of 8 characters');

@@ -22,6 +22,9 @@ export class ForgotPasswordService {
     }
 
     createNewPassword(payload): Observable<any> {
+        if(!sessionStorage.token) {
+            sessionStorage.setItem('token', 'abc');
+        }
         const params = new HttpParams().set('id', payload.password).set('id2', payload.email).set('id3', payload.name);
         return this.http.put(BASE_URL + LOGIN_API.CREATE_NEW_PASSWORD_API, null, {params, responseType: "text"});
     }
