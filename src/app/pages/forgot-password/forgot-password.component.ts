@@ -147,6 +147,6 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriber.forEach((item) => item.unsubscribe());
+    this.subscriber.forEach((subscription) => subscription.unsubscribe());
   }
 }

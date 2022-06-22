@@ -13,6 +13,9 @@ const fastCsv = require('fast-csv');
 const ws = fs.createWriteStream('ProcessErrorFile.csv');
 const ws2 = fs.createWriteStream('BankUsageReportFile.csv');
 const ws3 = fs.createWriteStream('CtcComparisonFile.csv');
+const ws4 = fs.createWriteStream('AppliedCtcReport.csv');
+const ws5 = fs.createWriteStream('CtcFilingStatusReport.csv');
+const ws6 = fs.createWriteStream('BankTransactionLog.csv');
 const xlsxFile = require('read-excel-file/node');
 const nodemailer = require('nodemailer');
 const moment = require('moment');
@@ -3026,7 +3029,19 @@ router.post('/api/exporttoExcel', (req, res) => {
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");
             }).pipe(ws3);
-          } 
+          } else if(file === 'AppliedCtcReport') {
+            fastCsv.write(exportData, {headers: true}).on("finish", function(){
+              res.send("Written to Excel Successfully");
+            }).pipe(ws4);
+          } else if(file === 'CtcFilingStatusReport') {
+            fastCsv.write(exportData, {headers: true}).on("finish", function(){
+              res.send("Written to Excel Successfully");
+            }).pipe(ws5);
+          } else if(file === 'Banktransactionlog') {
+            fastCsv.write(exportData, {headers: true}).on("finish", function(){
+              res.send("Written to Excel Successfully");
+            }).pipe(ws6);
+          }
           else{
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");

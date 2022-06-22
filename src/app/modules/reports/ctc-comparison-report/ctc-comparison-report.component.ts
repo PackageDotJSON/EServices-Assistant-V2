@@ -1,10 +1,12 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { BASE_URL } from 'src/app/constants/base-url.constant';
 import { CHANGE_COMPANY_OBJECT_API } from 'src/app/enums/apis.enum';
-import { BANK_USAGE_REPORT_FILE, CTC_COMPARISON_REPORT_FILE, END_KEY, START_KEY } from 'src/app/settings/app.settings';
+import {
+  CTC_COMPARISON_REPORT_FILE,
+  END_KEY,
+  START_KEY,
+} from 'src/app/settings/app.settings';
 import { ReportsService } from '../services/reports.service';
 import * as CanvasJS from './canvasjs.min';
 import * as bootstrap from 'bootstrap';
@@ -27,7 +29,9 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   bankYear = [2021];
   writeToExcelAlert = false;
 
-  constructor(private reportsService: ReportsService, private http: HttpClient) {}
+  constructor(
+    private reportsService: ReportsService,
+  ) {}
 
   ngOnInit(): void {
     this.getCtcReport();
@@ -36,17 +40,18 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   getCtcReport() {
     this.digitalCtcReport = [];
     this.bankPortalData = [];
-    this.subscriber.push(this.reportsService
-      .fetchCombinedCtcReport(this.startDateKey, this.endDateKey)
-      .pipe(
-        tap((res) => {
-          this.calculateDigitalCtcReport(res[0]);
-          this.calculateBankPortalData(res[1]);
-          this.drawChart();
-        })
-      )
-      .subscribe()
-      );
+    this.subscriber.push(
+      this.reportsService
+        .fetchCombinedCtcReport(this.startDateKey, this.endDateKey)
+        .pipe(
+          tap((res) => {
+            this.calculateDigitalCtcReport(res[0]);
+            this.calculateBankPortalData(res[1]);
+            this.drawChart();
+          })
+        )
+        .subscribe()
+    );
   }
 
   calculateDigitalCtcReport(ctcReport) {
@@ -69,7 +74,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
           DIG_ISSUED: digitalIssuedTotal,
           STAND_AMT: standardAmountTotal,
           STAND_ISSUED: standardIssuedTotal,
-          YEAR: ctcReport[i]['DATE'].split('-')[0]
+          YEAR: ctcReport[i]['DATE'].split('-')[0],
         });
 
         break;
@@ -93,7 +98,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
           DIG_ISSUED: digitalIssuedTotal,
           STAND_AMT: standardAmountTotal,
           STAND_ISSUED: standardIssuedTotal,
-          YEAR: ctcReport[i]['DATE'].split('-')[0]
+          YEAR: ctcReport[i]['DATE'].split('-')[0],
         });
         standardAmountTotal = 0;
         standardIssuedTotal = 0;
@@ -112,7 +117,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
         this.bankPortalData.push({
           month: bankData[i]['INVOICE_MONTH'],
           value: invoiceTotal,
-          year: bankData[i]['INVOICE_PERIOD_FROM'].split('-')[0]
+          year: bankData[i]['INVOICE_PERIOD_FROM'].split('-')[0],
         });
         break;
       }
@@ -123,7 +128,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
         this.bankPortalData.push({
           month: bankData[i]['INVOICE_MONTH'],
           value: invoiceTotal,
-          year: bankData[i]['INVOICE_PERIOD_FROM'].split('-')[0]
+          year: bankData[i]['INVOICE_PERIOD_FROM'].split('-')[0],
         });
         invoiceTotal = 0;
       }
@@ -338,13 +343,14 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   }
 
   exportData() {
-    let comparisonReport = {...this.bankPortalData, ...this.digitalCtcReport};
+    let comparisonReport = [...this.bankPortalData, ...this.digitalCtcReport];
     this.subscriber.push(
-      this.http
-        .post(BASE_URL + CHANGE_COMPANY_OBJECT_API.EXPORT_TO_EXCEL, {
-          value: comparisonReport,
-          fileName: 'CtcComparisonReport',
-        }, {responseType: 'text'})
+      this.reportsService
+        .exportData(
+          comparisonReport,
+          CHANGE_COMPANY_OBJECT_API.EXPORT_TO_EXCEL,
+          'CtcComparisonReport'
+        )
         .pipe(
           tap((res) => {
             if (JSON.stringify(res).includes('Written to Excel Successfully')) {
@@ -358,29 +364,19 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   }
 
   downloadExcelFile() {
-    const params = new HttpParams().set('id', CTC_COMPARISON_REPORT_FILE);
-    this.subscriber.push(this.http
-      .get(BASE_URL + CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE, {
-        params: params,
-        responseType: 'blob',
-      })
-      .pipe(
-        tap((res) => {
-          this.downloadFile(res, 'text/csv');
-        })
-      )
-      .subscribe()
+    this.subscriber.push(
+      this.reportsService
+        .downloadExcelFile(
+          CTC_COMPARISON_REPORT_FILE,
+          CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
+        )
+        .pipe(
+          tap((res) => {
+            this.reportsService.downloadFileToDesktop(res, 'text/csv');
+          })
+        )
+        .subscribe()
     );
-  }
-
-  downloadFile(data: any, type: string) {
-    let blob = new Blob([data], {type: type});
-    let url = window.URL.createObjectURL(blob);
-    let pwa = window.open(url);
-
-    if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-      alert('Please disable your pop up blocker for better experience.');
-    }
   }
 
   hideExcelAlert() {
@@ -392,6 +388,6 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriber.forEach(item => item.unsubscribe());
+    this.subscriber.forEach((item) => item.unsubscribe());
   }
 }

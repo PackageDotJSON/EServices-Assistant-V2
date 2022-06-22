@@ -7,7 +7,7 @@
       >
         <div
           class="card"
-          style="text-align: center; width: 80%;"
+          style="text-align: center; width: 80%"
           [@Enter]="'flyIn'"
         >
           <div class="card-header">
@@ -29,7 +29,7 @@
               <div class="form-group">
                 <div
                   class="input-group"
-                  style="width: 80%; margin: auto; height: 5px;"
+                  style="width: 80%; margin: auto; height: 5px"
                 >
                   <div
                     class="input-group-addon"
@@ -47,7 +47,10 @@
                   />
                 </div>
                 <br /><br />
-                <div class="input-group" style="width: 80%; margin: auto; height: 5px;">
+                <div
+                  class="input-group"
+                  style="width: 80%; margin: auto; height: 5px"
+                >
                   <div
                     class="input-group-addon"
                     style="font-size: 1.3rem; color: white"
@@ -63,8 +66,17 @@
                     required
                   />
                 </div>
-                <div style="text-align: end; margin-top: 2rem; margin-right: 3rem; cursor: pointer;">
-                  <small id="forgot-password" [routerLink]="forgotPasswordUrl">Forgot Password</small>
+                <div
+                  style="
+                    text-align: end;
+                    margin-top: 2rem;
+                    margin-right: 3rem;
+                    cursor: pointer;
+                  "
+                >
+                  <small id="forgot-password" [routerLink]="forgotPasswordUrl"
+                    >Forgot Password</small
+                  >
                 </div>
                 <br />
                 <button
@@ -84,7 +96,7 @@
             </div>
           </div>
 
-          <div *ngIf = "isLoading">
+          <div *ngIf="isLoading">
             <br />
           </div>
 

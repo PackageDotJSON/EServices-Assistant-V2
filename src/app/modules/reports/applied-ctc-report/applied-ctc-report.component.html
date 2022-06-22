@@ -1,9 +1,9 @@
-<div class="container-fluid" style = "width: 80%;">
+<div class="container-fluid" style="width: 80%">
   <div class="ribbon">
     <div class="ribbon-content"><p>Applied CTC Report</p></div>
   </div>
-  <div class="jumbotron-fluid" style = "margin: auto; text-align: center;">
-    <br><br><br><br>
+  <div class="jumbotron-fluid" style="margin: auto; text-align: center">
+    <br /><br /><br /><br />
     <!-- <div class="form-group">
       <div class="input-group" style = "width: 30%; margin: auto;">
         <i class="input-group-addon" style = "font-size: 1.3rem; color: white;">
@@ -14,39 +14,35 @@
         <button type="submit" class = "btn btn-outline-success" name="button" (click) = "searchAppliedCTCReport()">Search</button>
       </div>
     </div>  -->
-    <br>
+    <br />
     <div class="table-responsive">
-      <table style = "text-align: left;" class = "table table-striped table-hover table-bordered">
-        <thead style = "font-size: 15px;">
+      <table
+        style="text-align: left"
+        class="table table-striped table-hover table-bordered"
+      >
+        <thead style="font-size: 15px">
           <tr>
-            <th scope = "col">
-              No.
-            </th>
-            <th scope = "col">
-              Form Name
-            </th>
-            <th scope = "col">
-              Form Fee
-            </th>
-            <th scope = "col">
-              Date
-            </th>
-            <th scope = "col">
-              User ID
-            </th>
+            <th scope="col">No.</th>
+            <th scope="col">Form Name</th>
+            <th scope="col">Form Fee</th>
+            <th scope="col">Date</th>
+            <th scope="col">User ID</th>
           </tr>
         </thead>
-        <tbody *ngIf = "!dataNotAvailable">
-          <tr style = "font-size: 13px;" *ngFor = "let cList of ctcTableData; let i = index">
-            <td>{{+ i + 1}}</td>
-            <td>{{cList.FORM_NAME}}</td>
-            <td>{{cList.FORM_FEE}}</td>
-            <td>{{cList.DATE}}</td>
-            <td>{{cList.USER_ID}}</td>
+        <tbody *ngIf="!dataNotAvailable">
+          <tr
+            style="font-size: 13px"
+            *ngFor="let cList of ctcTableData; let i = index"
+          >
+            <td>{{ +i + 1 }}</td>
+            <td>{{ cList.FORM_NAME }}</td>
+            <td>{{ cList.FORM_FEE }}</td>
+            <td>{{ cList.DATE }}</td>
+            <td>{{ cList.USER_ID }}</td>
           </tr>
         </tbody>
-        <tbody *ngIf = "dataNotAvailable">
-          <tr style = "font-size: 13px;">
+        <tbody *ngIf="dataNotAvailable">
+          <tr style="font-size: 13px">
             <td></td>
             <td></td>
             <td>No record found</td>
@@ -56,24 +52,87 @@
         </tbody>
       </table>
     </div>
-    <br><br><br>
-
-    <div *ngIf = "noTokenError" class="alert alert-warning alert-dismissible" id = "myauthFailureAlert" role = "alert" style = "margin: auto; width: 30%;">
-        <span>
-          <b> Failure - </b> You are trying to access this website without any token. This is an unusual error. Please contact the administrator.
-        </span>
+    <br /><br /><br />
+    <div style="float: right">
+      <button
+        class="btn btn-outline-success"
+        type="submit"
+        name="button"
+        (click)="exportData(); downloadExcelFile()"
+      >
+        Export to Excel <i class="bi bi-file-excel"></i>
+      </button>
+      <br /><br />
     </div>
 
-    <div *ngIf = "authFailedError" class="alert alert-warning alert-dismissible" id = "myTokenFailureAlert" role = "alert" style = "margin: auto; width: 30%;">
-        <span>
-          <b> Failure - </b> The token has expired. In order to renew the token, please log in again.
-        </span>
+    <ng-container *ngIf="writeToExcelAlert">
+      <br /><br />
+      <div
+        class="alert alert-success alert-dismissible"
+        id="excelAlert"
+        role="alert"
+        *ngIf="writeToExcelAlert"
+        style="margin: auto; width: 30%"
+      >
+        <button
+          type="button"
+          aria-hidden="true"
+          (click)="hideExcelAlert()"
+          class="close"
+          aria-label="Close"
+        >
+          <i class="bi bi-x"></i>
+        </button>
+        <span> <b> Success - </b> Exported to Excel Successfully! </span>
+      </div>
+    </ng-container>
+    <br /><br /><br />
+
+    <div
+      *ngIf="noTokenError"
+      class="alert alert-warning alert-dismissible"
+      id="myauthFailureAlert"
+      role="alert"
+      style="margin: auto; width: 30%"
+    >
+      <span>
+        <b> Failure - </b> You are trying to access this website without any
+        token. This is an unusual error. Please contact the administrator.
+      </span>
     </div>
 
-    <div class="alert alert-danger alert-dismissible fade show" *ngIf = "serverError" id = "serverAlert" role="alert" style = "width: 31%; text-align: center; margin: auto;">
-      <strong>Error!</strong> An unknown server error has occurred. Please try again.
-      <button type="button" class=" btn btn-close" data-bs-dismiss="alert" aria-label="Close" (click) = "hideServerAlert()"><i class="bi bi-x"></i></button>
+    <div
+      *ngIf="authFailedError"
+      class="alert alert-warning alert-dismissible"
+      id="myTokenFailureAlert"
+      role="alert"
+      style="margin: auto; width: 30%"
+    >
+      <span>
+        <b> Failure - </b> The token has expired. In order to renew the token,
+        please log in again.
+      </span>
     </div>
-  	<br>
+
+    <div
+      class="alert alert-danger alert-dismissible fade show"
+      *ngIf="serverError"
+      id="serverAlert"
+      role="alert"
+      style="width: 31%; text-align: center; margin: auto"
+    >
+      <strong>Error!</strong> An unknown server error has occurred. Please try
+      again.
+      <button
+        type="button"
+        class="btn btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+        (click)="hideServerAlert()"
+      >
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+    <br />
   </div>
 </div>

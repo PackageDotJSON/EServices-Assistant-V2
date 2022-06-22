@@ -1,26 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserAccess } from '../../services/login-service/login.service';
 import * as bootstrap from 'bootstrap';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ROUTES_URL } from 'src/app/enums/routes.enum';
 import { HeaderService } from 'src/app/services/header-service/header.service';
+import { Subscription } from 'rxjs';
 declare var $: any;
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit {
-
-  userA: boolean = false;
-  userB: boolean = false;
-  userC: boolean = false;
-  noTokenError: boolean = false;
-  authFailedError: boolean = false;
+export class HeaderComponent implements OnInit, OnDestroy {
+  userA = false;
+  userB = false;
+  userC = false;
+  noTokenError = false;
+  authFailedError = false;
   routes: any = ['/records', '/process', '/companyuser'];
-  serverError: boolean = false;
+  serverError = false;
 
   readonly homeUrl = ROUTES_URL.HOME_URL;
   readonly adminUrl = ROUTES_URL.ADMIN_URL;
@@ -29,6 +29,7 @@ export class HeaderComponent implements OnInit {
   readonly userprofileUrl = ROUTES_URL.USER_PROFILE;
   readonly requestLogUrl = ROUTES_URL.REQUEST_LOG_URL;
 
+  subscriber: Subscription;
   constructor(
     private useraccess: UserAccess,
     private http: HttpClient,
@@ -54,7 +55,8 @@ export class HeaderComponent implements OnInit {
   }
 
   fetchUserRights() {
-      this.headerService.fetchUserRights().subscribe((responseData) => {
+    this.subscriber = this.headerService.fetchUserRights().subscribe(
+      (responseData) => {
         if (JSON.stringify(responseData).includes('No Token Provided')) {
           this.noTokenError = true;
         } else if (
@@ -73,14 +75,17 @@ export class HeaderComponent implements OnInit {
           }, 2000);
         } else {
           this.routes = responseData;
-          for(let i = 0; i < this.routes.length; i++) {
-            this.routes[i].routes = ROUTES_URL.REPORTS_URL + this.routes[i].routes;
+          for (let i = 0; i < this.routes.length; i++) {
+            this.routes[i].routes =
+              ROUTES_URL.REPORTS_URL + this.routes[i].routes;
           }
         }
-      }, (error) => {
+      },
+      (error) => {
         this.serverError = true;
         this.showServerAlert();
-      });
+      }
+    );
   }
 
   showServerAlert() {
@@ -89,5 +94,9 @@ export class HeaderComponent implements OnInit {
 
   hideMyServerAlert() {
     $('#myServerAlert').hide();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriber.unsubscribe();
   }
 }

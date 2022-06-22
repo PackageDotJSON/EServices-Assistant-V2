@@ -17,7 +17,6 @@ import { DataSharingMonitoringReportComponent } from './data-sharing-monitoring-
 
 import { ReportsService } from './services/reports.service';
 
-
 @NgModule({
   declarations: [
     AppliedCTCReportComponent,

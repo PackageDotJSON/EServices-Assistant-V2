@@ -15,7 +15,10 @@ export const ROUTES: Routes = [
     path: '',
     children: [
       { path: 'appliedctcreport', component: AppliedCTCReportComponent },
-      { path: 'searchbanktransactionlog', component: BankTransactionLogComponent },
+      {
+        path: 'searchbanktransactionlog',
+        component: BankTransactionLogComponent,
+      },
       {
         path: 'bankusagereport',
         component: BankusagereportComponent,
@@ -42,8 +45,8 @@ export const ROUTES: Routes = [
       },
       {
         path: 'datasharingmonitoringreport',
-        component: DataSharingMonitoringReportComponent
-      }
+        component: DataSharingMonitoringReportComponent,
+      },
     ],
   },
 ];

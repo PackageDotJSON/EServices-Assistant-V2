@@ -15,14 +15,18 @@ const ROUTES: Routes = [
     children: [
       { path: 'admin', component: AdminpanelComponent },
       { path: 'profile', component: UserprofileComponent },
-      { path: 'requestlog', component: RequestlogComponent}
+      { path: 'requestlog', component: RequestlogComponent },
     ],
   },
 ];
 
 @NgModule({
-  declarations: [AdminpanelComponent, UserprofileComponent, RequestlogComponent],
+  declarations: [
+    AdminpanelComponent,
+    UserprofileComponent,
+    RequestlogComponent,
+  ],
   imports: [CommonModule, FormsModule, RouterModule.forChild(ROUTES)],
-  providers: [RequestLogService]
+  providers: [RequestLogService],
 })
 export class UserModule {}

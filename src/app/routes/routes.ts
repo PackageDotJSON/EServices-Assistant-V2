@@ -13,25 +13,21 @@ export const ROUTES: Routes = [
   },
   {
     path: 'forgotpassword',
-    component: ForgotPasswordComponent
+    component: ForgotPasswordComponent,
   },
   {
     path: 'reports',
     canActivate: [AuthGuard],
     loadChildren: () =>
-      import('../modules/reports/reports.module').then(
-        (m) => m.ReportsModule
-      ),
+      import('../modules/reports/reports.module').then((m) => m.ReportsModule),
   },
   {
     path: 'user',
     canActivate: [AuthGuard],
-    loadChildren: () => 
-      import('../modules/user/user.module').then(
-        (m) => m.UserModule
-      ),
+    loadChildren: () =>
+      import('../modules/user/user.module').then((m) => m.UserModule),
   },
   { path: 'home', canActivate: [AuthGuard], component: LandingPageComponent },
   { path: 'help', canActivate: [AuthGuard], component: HelpComponent },
-  { path: 'logout', canActivate: [AuthGuard], component: LogoutComponent }
+  { path: 'logout', canActivate: [AuthGuard], component: LogoutComponent },
 ];
