@@ -78,7 +78,6 @@
           <th scope="col">Digital CTC Revenue</th>
           <th scope="col">Standard CTC Issued</th>
           <th scope="col">Standard CTC Revenue</th>
-          <th scope="col">Month</th>
           <th scope="col">Invoice Amount</th>
         </tr>
       </thead>
@@ -86,28 +85,25 @@
       <tbody>
         <tr
           style="font-size: 13px;"
-          *ngFor="let bReport of bankPortalData; let i = index"
+          *ngFor="let bReport of digitalCtcReport; let i = index"
         >
           <td>
-            {{ digitalCtcReport[i]?.INVOICE_MONTH + '-' + digitalCtcReport[i]?.YEAR }}
+            {{ bReport?.INVOICE_MONTH + '-' + digitalCtcReport[i]?.YEAR }}
           </td>
           <td>
-            {{ digitalCtcReport[i]?.DIG_ISSUED }}
+            {{ bReport?.DIG_ISSUED }}
           </td>
           <td>
-            {{ digitalCtcReport[i]?.DIG_AMT | currency: "":"":"1.0-0" }}
+            {{ bReport?.DIG_AMT | currency: "":"":"1.0-0" }}
           </td>
           <td>
-            {{ digitalCtcReport[i]?.STAND_ISSUED }}
+            {{ bReport?.STAND_ISSUED }}
           </td>
           <td>
-            {{ digitalCtcReport[i]?.STAND_AMT | currency: "":"":"1.0-0" }}
+            {{ bReport?.STAND_AMT | currency: "":"":"1.0-0" }}
           </td>
           <td>
-            {{ bReport?.month + '-' + bReport?.year }}
-          </td>
-          <td>
-            {{ bReport?.value | currency: "":"":"1.0-0" }}
+            {{ (bankPortalData[i+1]?.value ? bankPortalData[i+1]?.value : '') | currency: "":"":"1.0-0" }}
           </td>
         </tr>
       </tbody>
