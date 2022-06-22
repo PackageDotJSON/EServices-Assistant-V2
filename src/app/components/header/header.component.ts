@@ -29,7 +29,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   readonly userprofileUrl = ROUTES_URL.USER_PROFILE;
   readonly requestLogUrl = ROUTES_URL.REQUEST_LOG_URL;
 
-  subscriber: Subscription;
+  subscriber: Subscription[] = [];
+
   constructor(
     private useraccess: UserAccess,
     private http: HttpClient,
@@ -55,7 +56,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   fetchUserRights() {
-    this.subscriber = this.headerService.fetchUserRights().subscribe(
+    this.subscriber.push(this.headerService.fetchUserRights().subscribe(
       (responseData) => {
         if (JSON.stringify(responseData).includes('No Token Provided')) {
           this.noTokenError = true;
@@ -85,6 +86,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.serverError = true;
         this.showServerAlert();
       }
+    )
     );
   }
 
@@ -97,6 +99,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriber.unsubscribe();
+    this.subscriber.forEach(subscription => subscription.unsubscribe());
   }
 }

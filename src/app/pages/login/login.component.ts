@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   serverError: boolean = false;
   isLoading: boolean = false;
   readonly forgotPasswordUrl = ROUTES_URL.FORGOT_PASSWORD_URL;
-  subscriber: Subscription;
+  subscriber: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onSubmit(form: NgForm) {
     this.isLoading = true;
-    this.subscriber = this.http
+    this.subscriber.push(this.http
       .post(BASE_URL + LOGIN_API.LOGIN_API, form.value, {
         responseType: 'text',
         observe: 'response',
@@ -99,16 +99,14 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.showunAutherizedAlert();
             this.useraccess.displayHeaderFooter(false);
           }
-
-          // this.companiesList$ = this.companyService.fetchCompaniesList();
-          // this.companiesList$.subscribe(res => console.log(res));
         },
         (error) => {
           this.serverError = true;
           this.showServerAlert();
           this.useraccess.displayHeaderFooter(false);
         }
-      );
+      )
+    );
   }
 
   hideServerAlert() {
@@ -128,6 +126,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriber.unsubscribe();
+    this.subscriber.forEach(subscription => subscription.unsubscribe());
   }
 }
