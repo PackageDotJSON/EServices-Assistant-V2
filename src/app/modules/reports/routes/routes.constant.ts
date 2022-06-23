@@ -24,7 +24,7 @@ export const ROUTES: Routes = [
         component: BankusagereportComponent,
       },
       {
-        path: 'combinedctcreport',
+        path: 'ctcrevenuereport',
         component: CTCComparisonReportComponent,
       },
       {

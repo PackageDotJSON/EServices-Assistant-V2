@@ -189,7 +189,7 @@ export class AdminpanelComponent implements OnInit, OnDestroy {
       { roles: 'Process Report - Status Wise' },
       { roles: 'View Company Records' },
       { roles: 'View Company Submission Mode' },
-      { roles: 'CTC Comparison Report' },
+      { roles: 'CTC Revenue Report' },
       { roles: 'Bank Usage Report' },
       { roles: 'Data Sharing Monitoring Report' },
     ];
