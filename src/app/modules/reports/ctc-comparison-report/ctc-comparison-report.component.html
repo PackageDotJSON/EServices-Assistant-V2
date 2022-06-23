@@ -88,7 +88,7 @@
           *ngFor="let bReport of digitalCtcReport; let i = index"
         >
           <td>
-            {{ bReport?.INVOICE_MONTH + '-' + digitalCtcReport[i]?.YEAR }}
+            {{ (bReport?.INVOICE_MONTH ? bReport?.INVOICE_MONTH : bankPortalData[i]?.month) + '-' + (bReport?.YEAR ? bReport?.YEAR : bankPortalData[i]?.year) }}
           </td>
           <td>
             {{ bReport?.DIG_ISSUED }}
@@ -103,7 +103,7 @@
             {{ bReport?.STAND_AMT | currency: "":"":"1.0-0" }}
           </td>
           <td>
-            {{ (bankPortalData[i+1]?.value ? bankPortalData[i+1]?.value : '') | currency: "":"":"1.0-0" }}
+            {{ (bankPortalData[i]?.value ? bankPortalData[i]?.value : '') | currency: "":"":"1.0-0" }}
           </td>
         </tr>
       </tbody>

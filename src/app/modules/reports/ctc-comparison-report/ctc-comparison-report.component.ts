@@ -29,9 +29,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   bankYear = [2021];
   writeToExcelAlert = false;
 
-  constructor(
-    private reportsService: ReportsService,
-  ) {}
+  constructor(private reportsService: ReportsService) {}
 
   ngOnInit(): void {
     this.getCtcReport();
@@ -133,6 +131,8 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
         invoiceTotal = 0;
       }
     }
+
+    this.mapBankPortalData();
   }
 
   drawChart() {
@@ -377,6 +377,19 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
         )
         .subscribe()
     );
+  }
+
+  mapBankPortalData() {
+    if (
+      this.bankPortalData[0].month !== this.digitalCtcReport[0].INVOICE_MONTH
+    ) {
+      this.digitalCtcReport.unshift(null);
+    } else if (
+      this.bankPortalData[this.bankPortalData.length - 1].month !==
+      this.digitalCtcReport[this.digitalCtcReport.length - 1].INVOICE_MONTH
+    ) {
+      this.bankPortalData.push(null);
+    }
   }
 
   hideExcelAlert() {
