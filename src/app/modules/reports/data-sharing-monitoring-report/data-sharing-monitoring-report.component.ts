@@ -14,6 +14,7 @@ export class DataSharingMonitoringReportComponent implements OnInit, OnDestroy {
   pushEntities: string[] = [];
   receiveEntitites: string[] = [];
   oracleData: string[];
+  isWaiting = false;
 
   constructor(private reportsService: ReportsService) {}
 
@@ -22,6 +23,7 @@ export class DataSharingMonitoringReportComponent implements OnInit, OnDestroy {
   }
 
   getDataMonitoringReport() {
+    this.isWaiting = true;
     this.subscription = this.reportsService
       .fetchDataSharingMonitorReport()
       .pipe(
@@ -33,7 +35,7 @@ export class DataSharingMonitoringReportComponent implements OnInit, OnDestroy {
             else this.receiveEntitites.push(item);
           });
 
-          console.log(this.pushEntities, this.receiveEntitites);
+          this.isWaiting = false;
         })
       )
       .subscribe();

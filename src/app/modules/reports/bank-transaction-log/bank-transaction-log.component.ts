@@ -35,6 +35,7 @@ export class BankTransactionLogComponent implements OnInit, OnDestroy {
   enabledByDefault = true;
   subscriber: Subscription[] = [];
   writeToExcelAlert = false;
+  isWaiting = false;
 
   constructor(
     private http: HttpClient,
@@ -63,6 +64,7 @@ export class BankTransactionLogComponent implements OnInit, OnDestroy {
   }
 
   fetchBankLogData() {
+    this.isWaiting = true;
     this.subscriber.push(
       this.http
         .get(BASE_URL + BANK_COMPANY_LOG_API.FETCH_BANK_DATA)
@@ -95,6 +97,7 @@ export class BankTransactionLogComponent implements OnInit, OnDestroy {
               this.bankData.push(response);
               this.bankData = this.bankData[0];
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;
@@ -105,6 +108,7 @@ export class BankTransactionLogComponent implements OnInit, OnDestroy {
   }
 
   searchBankLogDataEntity() {
+    this.isWaiting = true;
     this.dataUnavailable = false;
     this.searchedBankData = [];
     const params = new HttpParams().set('id', this.searchDataKey);
@@ -146,6 +150,7 @@ export class BankTransactionLogComponent implements OnInit, OnDestroy {
                 this.dataUnavailable = true;
               }
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;
@@ -157,6 +162,7 @@ export class BankTransactionLogComponent implements OnInit, OnDestroy {
   }
 
   searchBankLogDataDate() {
+    this.isWaiting = true;
     this.dataUnavailable = false;
     this.searchedBankData = [];
     const params = new HttpParams()
@@ -198,6 +204,7 @@ export class BankTransactionLogComponent implements OnInit, OnDestroy {
                 this.dataUnavailable = true;
               }
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;

@@ -25,6 +25,7 @@ export class AppliedCTCReportComponent implements OnInit, OnDestroy {
   serverError = false;
   writeToExcelAlert = false;
   subscriber: Subscription[] = [];
+  isWaiting = false;
 
   constructor(
     private http: HttpClient,
@@ -38,6 +39,7 @@ export class AppliedCTCReportComponent implements OnInit, OnDestroy {
   }
 
   searchAppliedCTCReport() {
+    this.isWaiting = true;
     this.dataNotAvailable = false;
     this.ctcTableData = [];
     this.subscriber.push(this.http
@@ -75,6 +77,7 @@ export class AppliedCTCReportComponent implements OnInit, OnDestroy {
               this.dataNotAvailable = true;
             }
           }
+          this.isWaiting = false;
         },
         (error) => {
           this.serverError = true;

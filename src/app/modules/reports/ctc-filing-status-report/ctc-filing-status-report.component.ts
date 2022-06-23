@@ -33,6 +33,7 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
   submitted: number;
   underSubmission: number;
   subscriber: Subscription[] = [];
+  isWaiting = false;
 
   constructor(
     private http: HttpClient,
@@ -47,6 +48,7 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
   }
 
   fetchCTCReportSummary() {
+    this.isWaiting = true;
     this.subscriber.push(
       this.http
         .get(BASE_URL + CHANGE_COMPANY_SECTOR_API.FETCH_CTC_REPORT_SUMMARY)
@@ -85,6 +87,7 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
 
               this.drawChart();
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;
@@ -95,6 +98,7 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
   }
 
   fetchCTCReport() {
+    this.isWaiting = true;
     this.ctcTableList = [];
     this.subscriber.push(
       this.http
@@ -128,6 +132,7 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
               this.ctcTableList.push(response);
               this.ctcTableList = this.ctcTableList[0];
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;
@@ -138,6 +143,7 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
   }
 
   searchCTCReport() {
+    this.isWaiting = true;
     this.dataNotAvailable = false;
     this.ctcTableList = [];
     const params = new HttpParams().set('id', this.searchDataKey);
@@ -176,6 +182,7 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
                 this.dataNotAvailable = true;
               }
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;

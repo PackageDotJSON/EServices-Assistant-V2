@@ -23,6 +23,7 @@ export class BankusagereportComponent implements OnInit, OnDestroy {
   endDateKey = END_KEY;
   writeToExcelAlert = false;
   subscriber: Subscription[] = [];
+  isWaiting = false;
 
   constructor(
     private reportsService: ReportsService
@@ -33,6 +34,7 @@ export class BankusagereportComponent implements OnInit, OnDestroy {
   }
 
   getBankUsageReport() {
+    this.isWaiting = true;
     const payload = {
       startDate: this.startDateKey,
       endDate: this.endDateKey,
@@ -40,7 +42,7 @@ export class BankusagereportComponent implements OnInit, OnDestroy {
     this.bankUsageReport$ = this.reportsService.fetchBankUsageReport(payload);
     this.subscriber.push(
       this.bankUsageReport$
-        .pipe(tap((res) => (this.bankUsageReport = res)))
+        .pipe(tap((res) => (this.bankUsageReport = res, this.isWaiting = false)))
         .subscribe()
     );
   }

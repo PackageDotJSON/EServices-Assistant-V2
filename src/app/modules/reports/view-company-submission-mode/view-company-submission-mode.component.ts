@@ -29,6 +29,7 @@ export class ViewCompanySubmissionModeComponent implements OnInit, OnDestroy {
   authFailedError = false;
   enabledByDefault = true;
   subscriber: Subscription[] = [];
+  isWaiting = false;
 
   constructor(
     private http: HttpClient,
@@ -61,6 +62,7 @@ export class ViewCompanySubmissionModeComponent implements OnInit, OnDestroy {
   }
 
   processListByCompany() {
+    this.isWaiting = true;
     const params = new HttpParams().set('id', this.companyName);
     this.companyData = [];
     this.subscriber.push(
@@ -106,6 +108,7 @@ export class ViewCompanySubmissionModeComponent implements OnInit, OnDestroy {
               }
               this.companyName = '';
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;
@@ -116,6 +119,7 @@ export class ViewCompanySubmissionModeComponent implements OnInit, OnDestroy {
   }
 
   processListByNum() {
+    this.isWaiting = true;
     const test = JSON.stringify(this.incorporationNumber);
     const params = new HttpParams().set('id', test);
     this.companyData = [];
@@ -163,6 +167,7 @@ export class ViewCompanySubmissionModeComponent implements OnInit, OnDestroy {
               }
               this.incorporationNumber = null;
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;

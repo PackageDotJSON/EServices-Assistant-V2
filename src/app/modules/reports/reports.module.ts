@@ -14,6 +14,7 @@ import { ProcessReportStatusWiseComponent } from './process-report-status-wise/p
 import { ViewCompanyRecordsComponent } from './view-company-records/view-company-records.component';
 import { ViewCompanySubmissionModeComponent } from 'src/app/modules/reports/view-company-submission-mode/view-company-submission-mode.component';
 import { DataSharingMonitoringReportComponent } from './data-sharing-monitoring-report/data-sharing-monitoring-report.component';
+import { LoaderComponent } from '../../components/loader/loader.component';
 
 import { ReportsService } from './services/reports.service';
 
@@ -28,6 +29,7 @@ import { ReportsService } from './services/reports.service';
     ViewCompanyRecordsComponent,
     ViewCompanySubmissionModeComponent,
     DataSharingMonitoringReportComponent,
+    LoaderComponent
   ],
   imports: [CommonModule, FormsModule, RouterModule.forChild(ROUTES)],
   providers: [ReportsService],

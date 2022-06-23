@@ -32,7 +32,7 @@ import { ForgotPasswordService } from './services/forgot-password-service/forgot
     LogoutComponent,
     HeaderComponent,
     FooterComponent,
-    ForgotPasswordComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

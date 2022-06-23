@@ -35,6 +35,7 @@ export class ProcessReportStatusWiseComponent implements OnInit, OnDestroy {
   countIncorporate: number = 0;
   countReject: number = 0;
   subscriber: Subscription[] = [];
+  isWaiting = false;
 
   constructor(
     private http: HttpClient,
@@ -49,6 +50,7 @@ export class ProcessReportStatusWiseComponent implements OnInit, OnDestroy {
   }
 
   fetchErrorProceedData() {
+    this.isWaiting = true;
     this.subscriber.push(
       this.http
         .get(BASE_URL + CHANGE_COMPANY_OBJECT_API.FETCH_ERROR_PROCEED_DATA)
@@ -83,6 +85,7 @@ export class ProcessReportStatusWiseComponent implements OnInit, OnDestroy {
               this.proceedsError = this.proceedsData.length;
               this.fetchErrorTypes();
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;
@@ -93,6 +96,7 @@ export class ProcessReportStatusWiseComponent implements OnInit, OnDestroy {
   }
 
   fetchErrorProcessData() {
+    this.isWaiting = true;
     this.subscriber.push(
       this.http
         .get(BASE_URL + CHANGE_COMPANY_OBJECT_API.FETCH_ERROR_PROCESS_DATA)
@@ -126,6 +130,7 @@ export class ProcessReportStatusWiseComponent implements OnInit, OnDestroy {
               this.processData = this.processData[0];
               this.processError = this.processData.length;
             }
+            this.isWaiting = false;
           },
           (error) => {
             this.serverError = true;

@@ -28,6 +28,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   ctcYear = [2021];
   bankYear = [2021];
   writeToExcelAlert = false;
+  isWaiting = false;
 
   constructor(private reportsService: ReportsService) {}
 
@@ -36,6 +37,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
   }
 
   getCtcReport() {
+    this.isWaiting = true;
     this.digitalCtcReport = [];
     this.bankPortalData = [];
     this.subscriber.push(
@@ -46,6 +48,7 @@ export class CTCComparisonReportComponent implements OnInit, OnDestroy {
             this.calculateDigitalCtcReport(res[0]);
             this.calculateBankPortalData(res[1]);
             this.drawChart();
+            this.isWaiting = false;
           })
         )
         .subscribe()
