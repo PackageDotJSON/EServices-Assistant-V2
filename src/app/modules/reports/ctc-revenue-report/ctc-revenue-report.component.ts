@@ -155,7 +155,6 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
 
     let dps = [];
     for (let i = 0; i <= this.digitalCtcReport.length; i++) {
-      console.log(this.digitalCtcReport[i]);
       if (
         this.digitalCtcReport[i] !== null &&
         this.digitalCtcReport[i] !== undefined
@@ -163,11 +162,13 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
         dps.push(
           {
             y: this.digitalCtcReport[i]?.DIG_AMT,
-            label: this.digitalCtcReport[i].INVOICE_MONTH + ' ' + this.digitalCtcReport[i].YEAR
+            label: this.digitalCtcReport[i].INVOICE_MONTH + ' ' + this.digitalCtcReport[i].YEAR,
+            color: "#C70039"
           },
           {
             y: this.digitalCtcReport[i]?.STAND_AMT,
-            label: this.digitalCtcReport[i].INVOICE_MONTH + ' ' + this.digitalCtcReport[i].YEAR
+            label: this.digitalCtcReport[i].INVOICE_MONTH + ' ' + this.digitalCtcReport[i].YEAR,
+            color: "RoyalBlue"
           }
         );
     }
