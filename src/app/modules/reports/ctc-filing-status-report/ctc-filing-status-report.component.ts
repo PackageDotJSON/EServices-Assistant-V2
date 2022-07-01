@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { UserAccess } from '../../../services/login-service/login.service';
-import * as CanvasJS from './canvasjs.min';
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
 import { BASE_URL } from '../../../constants/base-url.constant';
@@ -12,7 +11,12 @@ import {
 } from '../../../enums/apis.enum';
 import { Subscription } from 'rxjs';
 import { ReportsService } from '../services/reports.service';
-import { CTC_FILING_STATUS_REPORT_FILE } from 'src/app/settings/app.settings';
+import {
+  CHART_CONFIG,
+  CTC_FILING_STATUS_REPORT_FILE,
+} from 'src/app/settings/app.settings';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 declare var $: any;
 
 @Component({
@@ -34,6 +38,9 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
   underSubmission: number;
   subscriber: Subscription[] = [];
   isWaiting = false;
+  chartData: unknown;
+  chartConfig: any;
+  myChart: unknown;
 
   constructor(
     private http: HttpClient,
@@ -85,7 +92,7 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
               this.submitted = this.ctcTableSummary[1].TOTAL;
               this.underSubmission = this.ctcTableSummary[2].TOTAL;
 
-              this.drawChart();
+              this.setChartData();
             }
             this.isWaiting = false;
           },
@@ -192,33 +199,39 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
     );
   }
 
-  drawChart() {
-    let chart = new CanvasJS.Chart('chartContainer', {
-      animationEnabled: true,
-      exportEnabled: true,
-      data: [
+  setChartData() {
+    this.chartData = {
+      labels: [
+        this.ctcTableSummary[0].STATUS,
+        this.ctcTableSummary[1].STATUS,
+        this.ctcTableSummary[2].STATUS,
+      ],
+      datasets: [
         {
-          type: 'pie',
-          indexLabel: '{label} - {y}',
-          dataPoints: [
-            {
-              y: this.ctcTableSummary[0].TOTAL,
-              label: this.ctcTableSummary[0].STATUS,
-            },
-            {
-              y: this.ctcTableSummary[1].TOTAL,
-              label: this.ctcTableSummary[1].STATUS,
-            },
-            {
-              y: this.ctcTableSummary[2].TOTAL,
-              label: this.ctcTableSummary[2].STATUS,
-            },
+          data: [
+            this.ctcTableSummary[0].TOTAL,
+            this.ctcTableSummary[1].TOTAL,
+            this.ctcTableSummary[2].TOTAL,
           ],
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)',
+          ],
+          hoverOffset: 4,
         },
       ],
-    });
+    };
+    this.chartConfig = {
+      type: CHART_CONFIG.PIE_CHART,
+      data: this.chartData,
+      options: {},
+    };
 
-    chart.render();
+    this.myChart = new Chart(
+      document.getElementById('myChart') as HTMLCanvasElement,
+      this.chartConfig
+    );
   }
 
   exportData() {
@@ -235,23 +248,19 @@ export class CTCFilingStatusReportComponent implements OnInit, OnDestroy {
               this.writeToExcelAlert = true;
               this.showExcelAlert();
             }
-          })
-        )
-        .subscribe()
-    );
-  }
-
-  downloadExcelFile() {
-    this.subscriber.push(
-      this.reportsService
-        .downloadExcelFile(
-          CTC_FILING_STATUS_REPORT_FILE,
-          CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
-        )
-        .pipe(
-          tap((res) => {
-            this.reportsService.downloadFileToDesktop(res, 'text/csv');
-          })
+          }),
+          switchMap(() =>
+            this.reportsService
+              .downloadExcelFile(
+                CTC_FILING_STATUS_REPORT_FILE,
+                CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
+              )
+              .pipe(
+                tap((res) => {
+                  this.reportsService.downloadFileToDesktop(res, 'text/csv');
+                })
+              )
+          )
         )
         .subscribe()
     );

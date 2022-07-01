@@ -40,12 +40,9 @@
 
   <br />
   <div class="row" style="width: 100%">
-    <div id="chartContainer" style="height: 200px; width: 100%"></div>
+    <canvas id="myChart" width="400" height="80"></canvas>
   </div>
-  <br />
-  <small>* The <b>Red</b> colour corresponds to <b>Digital CTC Revenue</b>.</small>
-  <br />
-  <small>* The <b>Blue</b> colour corresponds to <b>Standard CTC Revenue</b>.</small>
+  
   <br /><br />
 
   <div class="table-responsive">
@@ -63,17 +60,25 @@
           <th scope="col">Standard CTC Issued</th>
           <th scope="col">Standard CTC Revenue</th>
           <th scope="col">Invoice Amount</th>
-          <th scope="col">Total Revenue</th>
+          <th scope="col">
+            Total Revenue <br />(Digital CTC Revenue + Bank Invoice)
+          </th>
         </tr>
       </thead>
 
       <tbody>
         <tr
-          style="font-size: 13px;"
+          style="font-size: 13px"
           *ngFor="let bReport of digitalCtcReport; let i = index"
         >
           <td>
-            {{ (bReport?.INVOICE_MONTH ? bReport?.INVOICE_MONTH : bankPortalData[i]?.month) + '-' + (bReport?.YEAR ? bReport?.YEAR : bankPortalData[i]?.year) }}
+            {{
+              (bReport?.INVOICE_MONTH
+                ? bReport?.INVOICE_MONTH
+                : bankPortalData[i]?.month) +
+                "-" +
+                (bReport?.YEAR ? bReport?.YEAR : bankPortalData[i]?.year)
+            }}
           </td>
           <td>
             {{ bReport?.DIG_ISSUED }}
@@ -88,10 +93,33 @@
             {{ bReport?.STAND_AMT | currency: "":"":"1.0-0" }}
           </td>
           <td>
-            {{ (bankPortalData[i]?.value ? bankPortalData[i]?.value : '') | currency: "":"":"1.0-0" }}
+            {{
+              (bankPortalData[i]?.value ? bankPortalData[i]?.value : "")
+                | currency: "":"":"1.0-0"
+            }}
           </td>
           <td>
-            {{ (bReport?.DIG_AMT + bankPortalData[i]?.value) | currency: "":"":"1.0-0" }}
+            {{
+              bReport?.DIG_AMT + bankPortalData[i]?.value
+                | currency: "":"":"1.0-0"
+            }}
+          </td>
+        </tr>
+        <tr *ngIf="!isWaiting">
+          <td>
+            <b>Total</b>
+          </td>
+          <td></td>
+          <td>
+            <b>{{ digitalSum | currency: "":"":"1.0-0" }}</b>
+          </td>
+          <td></td>
+          <td>
+            <b>{{ standardSum | currency: "":"":"1.0-0" }}</b>
+          </td>
+          <td></td>
+          <td>
+            <b>{{ bankPortalSum | currency: "":"":"1.0-0" }}</b>
           </td>
         </tr>
       </tbody>
@@ -103,7 +131,7 @@
       class="btn btn-outline-success"
       type="submit"
       name="button"
-      (click)="exportData(); downloadExcelFile();"
+      (click)="exportData()"
     >
       Export to Excel <i class="bi bi-file-excel"></i>
     </button>

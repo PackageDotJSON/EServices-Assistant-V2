@@ -3,7 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 import { CHANGE_COMPANY_OBJECT_API } from 'src/app/enums/apis.enum';
 import { ReportsService } from '../services/reports.service';
 import * as bootstrap from 'bootstrap';
-import { tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import {
   BANK_USAGE_REPORT_FILE,
   END_KEY,
@@ -25,9 +25,7 @@ export class BankusagereportComponent implements OnInit, OnDestroy {
   subscriber: Subscription[] = [];
   isWaiting = false;
 
-  constructor(
-    private reportsService: ReportsService
-  ) {}
+  constructor(private reportsService: ReportsService) {}
 
   ngOnInit(): void {
     this.getBankUsageReport();
@@ -42,7 +40,9 @@ export class BankusagereportComponent implements OnInit, OnDestroy {
     this.bankUsageReport$ = this.reportsService.fetchBankUsageReport(payload);
     this.subscriber.push(
       this.bankUsageReport$
-        .pipe(tap((res) => (this.bankUsageReport = res, this.isWaiting = false)))
+        .pipe(
+          tap((res) => ((this.bankUsageReport = res), (this.isWaiting = false)))
+        )
         .subscribe()
     );
   }
@@ -61,23 +61,19 @@ export class BankusagereportComponent implements OnInit, OnDestroy {
               this.writeToExcelAlert = true;
               this.showExcelAlert();
             }
-          })
-        )
-        .subscribe()
-    );
-  }
-
-  downloadExcelFile() {
-    this.subscriber.push(
-      this.reportsService
-        .downloadExcelFile(
-          BANK_USAGE_REPORT_FILE,
-          CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
-        )
-        .pipe(
-          tap((res) => {
-            this.reportsService.downloadFileToDesktop(res, 'text/csv');
-          })
+          }),
+          switchMap(() =>
+            this.reportsService
+              .downloadExcelFile(
+                BANK_USAGE_REPORT_FILE,
+                CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
+              )
+              .pipe(
+                tap((res) => {
+                  this.reportsService.downloadFileToDesktop(res, 'text/csv');
+                })
+              )
+          )
         )
         .subscribe()
     );

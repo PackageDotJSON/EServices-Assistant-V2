@@ -1,15 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { CHANGE_COMPANY_OBJECT_API } from 'src/app/enums/apis.enum';
 import {
+  CHART_CONFIG,
   CTC_COMPARISON_REPORT_FILE,
   END_KEY,
   START_KEY,
 } from 'src/app/settings/app.settings';
 import { ReportsService } from '../services/reports.service';
-import * as CanvasJS from './canvasjs.min';
 import * as bootstrap from 'bootstrap';
+import { Chart } from 'chart.js';
 declare var $: any;
 
 @Component({
@@ -29,6 +30,12 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
   bankYear = [2021];
   writeToExcelAlert = false;
   isWaiting = false;
+  digitalSum = 0;
+  standardSum = 0;
+  bankPortalSum = 0;
+  chartData: unknown;
+  chartConfig: any;
+  myChart: any;
 
   constructor(private reportsService: ReportsService) {}
 
@@ -37,6 +44,7 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
   }
 
   getCtcReport() {
+    this.myChart?.destroy();
     this.isWaiting = true;
     this.digitalCtcReport = [];
     this.bankPortalData = [];
@@ -47,7 +55,7 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
           tap((res) => {
             this.calculateDigitalCtcReport(res[0]);
             this.calculateBankPortalData(res[1]);
-            this.drawChart();
+            this.setChartData();
             this.isWaiting = false;
           })
         )
@@ -138,48 +146,54 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
     this.mapBankPortalData();
   }
 
-  drawChart() {
-    
-    let chart = new CanvasJS.Chart('chartContainer', {
-      animationEnabled: true,
-      exportEnabled: true,
-      theme: 'light2',
-      data: [
-        {
-          type: 'column',
-          name: 'Jan',
-          dataPoints: [],
-        },
-      ],
+  setChartData() {
+    const labels = [];
+    const digitalCtcChart = [];
+    const standardCtcChart = [];
+
+    this.digitalCtcReport.forEach((item) => {
+      if (item !== null && item !== undefined) {
+        labels.push(item?.INVOICE_MONTH + ' ' + item?.YEAR);
+        digitalCtcChart.push(item?.DIG_AMT);
+        standardCtcChart.push(item?.STAND_AMT);
+      }
     });
 
-    let dps = [];
-    for (let i = 0; i <= this.digitalCtcReport.length; i++) {
-      if (
-        this.digitalCtcReport[i] !== null &&
-        this.digitalCtcReport[i] !== undefined
-      )
-        dps.push(
-          {
-            y: this.digitalCtcReport[i]?.DIG_AMT,
-            label: this.digitalCtcReport[i].INVOICE_MONTH + ' ' + this.digitalCtcReport[i].YEAR,
-            color: "#C70039"
-          },
-          {
-            y: this.digitalCtcReport[i]?.STAND_AMT,
-            label: this.digitalCtcReport[i].INVOICE_MONTH + ' ' + this.digitalCtcReport[i].YEAR,
-            color: "RoyalBlue"
-          }
-        );
-    }
+    this.chartData = {
+      labels: labels,
+      datasets: [
+        {
+          type: CHART_CONFIG.BAR_CHART,
+          label: 'Digital CTC Revenue',
+          data: digitalCtcChart,
+          backgroundColor: 'rgb(255, 99, 132)',
+          hoverOffset: 4,
+        },
+        {
+          type: CHART_CONFIG.BAR_CHART,
+          label: 'Standard CTC Revenue',
+          data: standardCtcChart,
+          backgroundColor: 'rgb(54, 162, 235)',
+          hoverOffset: 4,
+        },
+      ],
+    };
+    this.chartConfig = {
+      type: CHART_CONFIG.BAR_CHART,
+      data: this.chartData,
+      options: {},
+    };
 
-    chart.options.data[0].dataPoints = dps;
-
-    chart.render();
+    this.myChart = new Chart(
+      document.getElementById('myChart') as HTMLCanvasElement,
+      this.chartConfig
+    );
   }
 
   exportData() {
-    let comparisonReport = [...this.bankPortalData, ...this.digitalCtcReport];
+    const comparisonReport = this.digitalCtcReport
+      .concat(this.bankPortalData)
+      .filter((value) => value !== null && value !== undefined);
     this.subscriber.push(
       this.reportsService
         .exportData(
@@ -193,23 +207,19 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
               this.writeToExcelAlert = true;
               this.showExcelAlert();
             }
-          })
-        )
-        .subscribe()
-    );
-  }
-
-  downloadExcelFile() {
-    this.subscriber.push(
-      this.reportsService
-        .downloadExcelFile(
-          CTC_COMPARISON_REPORT_FILE,
-          CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
-        )
-        .pipe(
-          tap((res) => {
-            this.reportsService.downloadFileToDesktop(res, 'text/csv');
-          })
+          }),
+          switchMap(() =>
+            this.reportsService
+              .downloadExcelFile(
+                CTC_COMPARISON_REPORT_FILE,
+                CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
+              )
+              .pipe(
+                tap((res) => {
+                  this.reportsService.downloadFileToDesktop(res, 'text/csv');
+                })
+              )
+          )
         )
         .subscribe()
     );
@@ -226,6 +236,19 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
     ) {
       this.bankPortalData.push(null);
     }
+
+    this.digitalCtcReport.forEach((item) => {
+      if (item !== null && item !== undefined) {
+        this.digitalSum = this.digitalSum + item?.DIG_AMT;
+        this.standardSum = this.standardSum + item?.STAND_AMT;
+      }
+    });
+
+    this.bankPortalData.forEach((item) => {
+      if (item !== null && item !== undefined) {
+        this.bankPortalSum = this.bankPortalSum + item.value;
+      }
+    });
   }
 
   hideExcelAlert() {

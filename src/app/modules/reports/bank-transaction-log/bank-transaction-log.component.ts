@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserAccess } from '../../../services/login-service/login.service';
-import { map, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
 import { BASE_URL } from '../../../constants/base-url.constant';
@@ -230,23 +230,19 @@ export class BankTransactionLogComponent implements OnInit, OnDestroy {
               this.writeToExcelAlert = true;
               this.showExcelAlert();
             }
-          })
-        )
-        .subscribe()
-    );
-  }
-
-  downloadExcelFile() {
-    this.subscriber.push(
-      this.reportsService
-        .downloadExcelFile(
-          BANK_TRANSACTION_LOG_FILE,
-          CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
-        )
-        .pipe(
-          tap((res) => {
-            this.reportsService.downloadFileToDesktop(res, 'text/csv');
-          })
+          }),
+          switchMap(() =>
+            this.reportsService
+              .downloadExcelFile(
+                BANK_TRANSACTION_LOG_FILE,
+                CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
+              )
+              .pipe(
+                tap((res) =>
+                  this.reportsService.downloadFileToDesktop(res, 'text/csv')
+                )
+              )
+          )
         )
         .subscribe()
     );
@@ -269,6 +265,6 @@ export class BankTransactionLogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriber.forEach(subscription => subscription.unsubscribe());
+    this.subscriber.forEach((subscription) => subscription.unsubscribe());
   }
 }

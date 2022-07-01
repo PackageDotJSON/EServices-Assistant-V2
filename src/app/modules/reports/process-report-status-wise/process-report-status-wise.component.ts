@@ -1,15 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import * as CanvasJS from './canvasjs.min';
 import { UserAccess } from '../../../services/login-service/login.service';
 import * as bootstrap from 'bootstrap';
-import { map, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { BASE_URL } from '../../../constants/base-url.constant';
 import { CHANGE_COMPANY_OBJECT_API } from '../../../enums/apis.enum';
 import { Subscription } from 'rxjs';
-import { PROCESS_ERROR_FILE } from 'src/app/settings/app.settings';
+import {
+  CHART_CONFIG,
+  PROCESS_ERROR_FILE,
+} from 'src/app/settings/app.settings';
 import { ReportsService } from '../services/reports.service';
+import { Chart } from 'chart.js';
 declare var $: any;
 
 @Component({
@@ -36,6 +39,9 @@ export class ProcessReportStatusWiseComponent implements OnInit, OnDestroy {
   countReject: number = 0;
   subscriber: Subscription[] = [];
   isWaiting = false;
+  chartData: unknown;
+  chartConfig: any;
+  myChart: unknown;
 
   constructor(
     private http: HttpClient,
@@ -160,32 +166,63 @@ export class ProcessReportStatusWiseComponent implements OnInit, OnDestroy {
         this.countReject++;
       }
     }
-    this.drawChart();
+    this.setChartData();
   }
 
-  drawChart() {
-    let chart = new CanvasJS.Chart('chartContainer', {
-      animationEnabled: true,
-      exportEnabled: true,
-      data: [
+  setChartData() {
+    this.chartData = {
+      labels: [
+        'Examine Documents',
+        'Issue Resolution',
+        'Examine Form',
+        'Rectification',
+        'Perform Availability Search',
+        'Prepare & Print Resolution Letter',
+        'Give Advice',
+        'Issue Show Cause Letter',
+      ],
+      datasets: [
         {
-          type: 'pie',
-          indexLabel: '{label} - {y}',
-          dataPoints: [
-            { y: this.countComplete, label: 'Examine Documents' },
-            { y: this.countCRCS, label: 'Issue Resolution' },
-            { y: this.countGenerate, label: 'Examine Form' },
-            { y: this.countRectification, label: 'Rectification' },
-            { y: this.countExamine, label: 'Perform Availability Search' },
-            { y: this.countMark, label: 'Prepare& Print Resolution Letter' },
-            { y: this.countIncorporate, label: 'Give Advice' },
-            { y: this.countReject, label: 'Issue Show Cause Letter' },
+          data: [
+            this.countComplete,
+            this.countCRCS,
+            this.countGenerate,
+            this.countRectification,
+            this.countExamine,
+            this.countMark,
+            this.countIncorporate,
+            this.countReject,
           ],
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)',
+            'rgba(10, 199, 108)',
+            'rgba(111, 10, 199)',
+            'rgba(199, 10, 101)',
+            'rgba(199, 117, 10)',
+            'rgba(199, 168, 10)',
+          ],
+          hoverOffset: 4,
         },
       ],
-    });
+    };
+    this.chartConfig = {
+      type: CHART_CONFIG.PIE_CHART,
+      data: this.chartData,
+      options: {
+        plugins: {
+          legend: {
+            position: 'right',
+          },
+        },
+      },
+    };
 
-    chart.render();
+    this.myChart = new Chart(
+      document.getElementById('myChart') as HTMLCanvasElement,
+      this.chartConfig
+    );
   }
 
   exportData() {
@@ -202,23 +239,19 @@ export class ProcessReportStatusWiseComponent implements OnInit, OnDestroy {
               this.writeToExcelAlert = true;
               this.showExcelAlert();
             }
-          })
-        )
-        .subscribe()
-    );
-  }
-
-  downloadExcelFile() {
-    this.subscriber.push(
-      this.reportsService
-        .downloadExcelFile(
-          PROCESS_ERROR_FILE,
-          CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
-        )
-        .pipe(
-          tap((res) => {
-            this.reportsService.downloadFileToDesktop(res, 'text/csv');
-          })
+          }),
+          switchMap(() =>
+            this.reportsService
+              .downloadExcelFile(
+                PROCESS_ERROR_FILE,
+                CHANGE_COMPANY_OBJECT_API.DOWNLOAD_EXCEL_FILE
+              )
+              .pipe(
+                tap((res) => {
+                  this.reportsService.downloadFileToDesktop(res, 'text/csv');
+                })
+              )
+          )
         )
         .subscribe()
     );

@@ -30,11 +30,11 @@
     <br />
 
     <div class="row" style="width: 68%">
-      <div class="column mr-auto">
-        <div id="chartContainer" style="height: 200px; width: 100%"></div>
+      <div class="column mr-auto" style="margin-left: 20%;">
+        <canvas id="myChart" width="230" height="230"></canvas>
       </div>
       <div class="column ml-auto">
-        <br /><br />
+        <br /><br /><br />
         <p
           class="lead"
           style="font-size: 16px; font-weight: bold; text-align: left"
@@ -55,7 +55,6 @@
         </p>
       </div>
     </div>
-
     <br />
     <div class="table-responsive">
       <table
@@ -120,7 +119,7 @@
         class="btn btn-outline-success"
         type="submit"
         name="button"
-        (click)="exportData(); downloadExcelFile()"
+        (click)="exportData()"
       >
         Export to Excel <i class="bi bi-file-excel"></i>
       </button>

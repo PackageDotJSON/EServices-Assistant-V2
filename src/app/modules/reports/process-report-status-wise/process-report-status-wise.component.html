@@ -3,14 +3,14 @@
     <div class="ribbon-content"><p>Process Report - Status Wise</p></div>
   </div>
   <div class="jumbotron-fluid">
-    <br><br><br><br>
+    <br><br><br>
 
   <div class="row" style = "width: 68%;">
-    <div class="column mr-auto">
-      <div id = "chartContainer" style = "height: 200px; width: 100%;"></div>
+    <div class="column mr-auto" style="margin-left: 20%;">
+      <canvas id="myChart" width="320" height="310"></canvas>
     </div>
     <div class="column ml-auto" >
-      <br><br>
+      <br><br><br><br><br>
       <p class = "lead" style = "font-size: 16px; font-weight: bold; text-align: left;">Total Proceeds in Error State = {{proceedsData.length}}</p>
       <p class = "lead" style = "font-size: 16px; font-weight: bold; text-align: left;">Duplicate/Erroneous Process = {{processData.length}}</p>
     </div>
@@ -50,7 +50,7 @@
 
     <br><br>
     <div style = "float: right;">
-      <button class = "btn btn-outline-success" type="submit" name="button" (click) = "exportData(); downloadExcelFile()">Export to Excel <i class="bi bi-file-excel"></i></button>
+      <button class = "btn btn-outline-success" type="submit" name="button" (click) = "exportData()">Export to Excel <i class="bi bi-file-excel"></i></button>
       <br><br>
     </div>
 

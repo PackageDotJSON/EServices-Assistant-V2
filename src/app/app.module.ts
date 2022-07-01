@@ -32,7 +32,7 @@ import { ForgotPasswordService } from './services/forgot-password-service/forgot
     LogoutComponent,
     HeaderComponent,
     FooterComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +47,7 @@ import { ForgotPasswordService } from './services/forgot-password-service/forgot
     ForgotPasswordService,
     AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
-    [{provide: LocationStrategy, useClass: HashLocationStrategy}]
+    [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   ],
   bootstrap: [AppComponent],
 })

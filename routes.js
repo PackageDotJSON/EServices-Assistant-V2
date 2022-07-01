@@ -3025,27 +3025,33 @@ router.post('/api/exporttoExcel', (req, res) => {
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");
             }).pipe(ws2);
+            return;
           } else if(file === 'CtcComparisonReport') {
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");
             }).pipe(ws3);
+            return;
           } else if(file === 'AppliedCtcReport') {
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");
             }).pipe(ws4);
+            return;
           } else if(file === 'CtcFilingStatusReport') {
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");
             }).pipe(ws5);
+            return;
           } else if(file === 'Banktransactionlog') {
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");
             }).pipe(ws6);
+            return;
           }
           else{
             fastCsv.write(exportData, {headers: true}).on("finish", function(){
               res.send("Written to Excel Successfully");
             }).pipe(ws);
+            return;
           }
       }
 
@@ -3057,7 +3063,7 @@ router.post('/api/exporttoExcel', (req, res) => {
 });
 
 router.get('/api/downloadExcelFile', (req, res) => {
-  var options = {
+  let options = {
     root: path.join(__dirname),
     dotfiles: 'deny',
     headers: {
@@ -3066,7 +3072,7 @@ router.get('/api/downloadExcelFile', (req, res) => {
     }
   }
 
-  var fileName = req.query.id;
+  let fileName = req.query.id;
   res.sendFile(fileName, options, function (err) {
     if (!err)
     {
