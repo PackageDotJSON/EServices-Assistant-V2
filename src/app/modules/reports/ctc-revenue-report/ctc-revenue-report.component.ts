@@ -150,12 +150,19 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
     const labels = [];
     const digitalCtcChart = [];
     const standardCtcChart = [];
+    const bankInvoiceChart = [];
 
     this.digitalCtcReport.forEach((item) => {
       if (item !== null && item !== undefined) {
         labels.push(item?.INVOICE_MONTH + ' ' + item?.YEAR);
         digitalCtcChart.push(item?.DIG_AMT);
         standardCtcChart.push(item?.STAND_AMT);
+      }
+    });
+
+    this.bankPortalData.forEach(item => {
+      if (item !== null && item !== undefined) {
+        bankInvoiceChart.push(item?.value);
       }
     });
 
@@ -176,6 +183,13 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
           backgroundColor: 'rgb(54, 162, 235)',
           hoverOffset: 4,
         },
+        {
+          type: CHART_CONFIG.BAR_CHART,
+          label: 'Bank Invoice',
+          data: bankInvoiceChart,
+          backgroundColor: 'rgb(60,179,113)',
+          hoverOffset: 4,
+        },
       ],
     };
     this.chartConfig = {
@@ -194,6 +208,7 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
     const comparisonReport = this.digitalCtcReport
       .concat(this.bankPortalData)
       .filter((value) => value !== null && value !== undefined);
+    console.log(comparisonReport);
     this.subscriber.push(
       this.reportsService
         .exportData(

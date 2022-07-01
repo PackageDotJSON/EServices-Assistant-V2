@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpBackend } from '@angular/common/http';
+import { HttpClient, HttpBackend } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
 import { UserAccess } from '../../services/login-service/login.service';
 import * as bootstrap from 'bootstrap';

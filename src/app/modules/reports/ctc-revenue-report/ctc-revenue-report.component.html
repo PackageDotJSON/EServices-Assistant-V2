@@ -42,7 +42,7 @@
   <div class="row" style="width: 100%">
     <canvas id="myChart" width="400" height="80"></canvas>
   </div>
-  
+
   <br /><br />
 
   <div class="table-responsive">
@@ -72,13 +72,13 @@
           *ngFor="let bReport of digitalCtcReport; let i = index"
         >
           <td>
-            {{
+            <b>{{
               (bReport?.INVOICE_MONTH
                 ? bReport?.INVOICE_MONTH
                 : bankPortalData[i]?.month) +
                 "-" +
                 (bReport?.YEAR ? bReport?.YEAR : bankPortalData[i]?.year)
-            }}
+            }}</b>
           </td>
           <td>
             {{ bReport?.DIG_ISSUED }}

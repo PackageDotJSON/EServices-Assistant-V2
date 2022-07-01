@@ -11,8 +11,6 @@ import { ReportsService } from '../services/reports.service';
 export class DataSharingMonitoringReportComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   db2Data: string[];
-  pushEntities: string[] = [];
-  receiveEntitites: string[] = [];
   oracleData: string[];
   isWaiting = false;
 
@@ -29,12 +27,6 @@ export class DataSharingMonitoringReportComponent implements OnInit, OnDestroy {
       .pipe(
         tap((res) => {
           [this.db2Data, this.oracleData] = res;
-          
-          this.db2Data.forEach(item => {
-            if(item['ENTITIES'].includes('PUSH ')) this.pushEntities.push(item)
-            else this.receiveEntitites.push(item);
-          });
-
           this.isWaiting = false;
         })
       )

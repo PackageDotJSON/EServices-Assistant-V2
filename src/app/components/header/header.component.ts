@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserAccess } from '../../services/login-service/login.service';
 import * as bootstrap from 'bootstrap';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ROUTES_URL } from 'src/app/enums/routes.enum';
 import { HeaderService } from 'src/app/services/header-service/header.service';

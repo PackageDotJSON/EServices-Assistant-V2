@@ -11,6 +11,6 @@ export const PROCESS_ERROR_FILE = 'ProcessErrorFile.csv';
 export const CTC_COMPARISON_REPORT_FILE = 'CtcComparisonFile.csv';
 export const INITIAL_LOADING_TIME = environment.loadingTime;
 export const CHART_CONFIG = {
-    BAR_CHART: 'bar',
-    PIE_CHART: 'pie'
-}
+  BAR_CHART: 'bar',
+  PIE_CHART: 'pie',
+};
