@@ -160,7 +160,7 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.bankPortalData.forEach(item => {
+    this.bankPortalData.forEach((item) => {
       if (item !== null && item !== undefined) {
         bankInvoiceChart.push(item?.value);
       }
@@ -205,10 +205,21 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
   }
 
   exportData() {
-    const comparisonReport = this.digitalCtcReport
-      .concat(this.bankPortalData)
-      .filter((value) => value !== null && value !== undefined);
-    console.log(comparisonReport);
+    const comparisonReport = this.digitalCtcReport.filter(
+      (value) => value !== null && value !== undefined
+    );
+
+    for (let i = 0; i < comparisonReport.length; i++) {
+      for (let j = 0; j < this.bankPortalData.length; j++) {
+        if (
+          this.bankPortalData[j].month === comparisonReport[i].INVOICE_MONTH &&
+          this.bankPortalData[j].year === comparisonReport[i].YEAR
+        ) {
+          comparisonReport[i].BANK_INVOICE = this.bankPortalData[j].value;
+        }
+      }
+    }
+
     this.subscriber.push(
       this.reportsService
         .exportData(

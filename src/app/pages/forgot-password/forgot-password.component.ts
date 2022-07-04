@@ -56,6 +56,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
                 this.emailIsValid =
                   res.verificationcodevalid;
               this.userEmail = res.useremail;
+              sessionStorage.setItem('token', res.token);
             }
           })
         )
@@ -66,7 +67,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   onForgotPasswordSubmit() {
     if (this.dataReceived === true && this.emailIsValid === true) return;
 
-    if(this.newPassword?.length > 0) return;
+    if (this.newPassword?.length > 0) return;
 
     const payload = {
       userEmail: this.userEmail,
@@ -138,8 +139,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
           tap((res) => {
             res.includes('Data updated successfully')
               ? this.router.navigateByUrl(ROUTES_URL.LOGIN_URL)
-              : (this.passwordError =
-                  'Cannot update password, try again later');
+              : (this.passwordError = res);
           })
         )
         .subscribe()
