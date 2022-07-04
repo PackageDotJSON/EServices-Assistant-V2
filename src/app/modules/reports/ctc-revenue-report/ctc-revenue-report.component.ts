@@ -185,7 +185,7 @@ export class CTCRevenueReportComponent implements OnInit, OnDestroy {
         },
         {
           type: CHART_CONFIG.BAR_CHART,
-          label: 'Bank Invoice',
+          label: 'Bank Portal Revenue',
           data: bankInvoiceChart,
           backgroundColor: 'rgb(60,179,113)',
           hoverOffset: 4,
