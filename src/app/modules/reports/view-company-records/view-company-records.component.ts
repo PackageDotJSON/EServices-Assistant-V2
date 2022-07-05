@@ -56,6 +56,7 @@ export class ViewCompanyRecordsComponent implements OnInit, OnDestroy {
   dataUnAvailable = false;
   companiesName = [''];
   subscriber: Subscription[] = [];
+  readonly archiveDocumentUrl = EXTERNAL_URLS.ARCHIVE_DOCUMENT;
 
   constructor(
     private http: HttpClient,

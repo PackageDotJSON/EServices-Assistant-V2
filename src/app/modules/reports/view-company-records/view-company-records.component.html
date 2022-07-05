@@ -771,14 +771,18 @@
             <td>{{ data.PROCESS_FLDR_ID }}</td>
             <td>{{ data.DOCUMENTID }}</td>
             <td>
-              <button
+              <a href="{{ archiveDocumentUrl + 'L1.' + data.DOCUMENTID + '.V1' }}" target="_blank">
+              
+                <button
                 class="btn btn-success"
                 type="button"
                 name="button"
                 [disabled]="authFailedError"
               >
                 <i class="bi bi-eye" style="font-size: 1.3rem"></i>
+             
               </button>
+            </a>
             </td>
           </tr>
         </tbody>
