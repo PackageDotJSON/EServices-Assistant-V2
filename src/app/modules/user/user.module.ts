@@ -1,32 +1,25 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
-import { RequestLogService } from './services/request-log.service';
+import { ROUTES } from './routes/routes.constant';
 
-import { AdminpanelComponent } from './admin-panel/admin-panel.component';
+import { UserService } from './services/user.service';
+
+import { ApplicationManagementComponent } from './role-management/application-management/application-management.component';
+import { EservicesManagementComponent } from './role-management/eservices-management/eservices-management.component';
 import { UserprofileComponent } from './user-profile/user-profile.component';
 import { RequestlogComponent } from './request-log/request-log.component';
 
-const ROUTES: Routes = [
-  {
-    path: '',
-    children: [
-      { path: 'admin', component: AdminpanelComponent },
-      { path: 'profile', component: UserprofileComponent },
-      { path: 'requestlog', component: RequestlogComponent },
-    ],
-  },
-];
-
 @NgModule({
   declarations: [
-    AdminpanelComponent,
+    ApplicationManagementComponent,
+    EservicesManagementComponent,
     UserprofileComponent,
     RequestlogComponent,
   ],
-  imports: [CommonModule, FormsModule, RouterModule.forChild(ROUTES)],
-  providers: [RequestLogService],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule.forChild(ROUTES)],
+  providers: [UserService],
 })
 export class UserModule {}

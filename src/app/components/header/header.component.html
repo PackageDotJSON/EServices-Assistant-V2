@@ -24,10 +24,31 @@
           <span class="sr-only">(current)</span></a
         >
       </li>
-      <li class="nav-item" *ngIf="userA">
-        <a class="nav-link" routerLinkActive="active" [routerLink]="adminUrl"
-          ><i class="bi bi-people" style="font-size: 1.3rem"></i>&nbsp; Admin</a
+      <li class="nav-item dropdown" *ngIf="userA">
+        <a
+          class="nav-link dropdown-toggle"
+          id="navbarDropdownMenuLink"
+          role="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
         >
+          <i class="bi bi-people" style="font-size: 1.3rem"></i>&nbsp; Admin
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a
+            class="dropdown-item"
+            routerLinkActive="active"
+            [routerLink]="applicationManagementUrl"
+            >Application Role Management</a
+          >
+          <a
+            class="dropdown-item"
+            routerLinkActive="active"
+            [routerLink]="eservicesManagementUrl"
+            >EServices Role Management</a
+          >
+        </div>
       </li>
       <li class="nav-item" *ngIf="userA">
         <a

@@ -92,7 +92,9 @@ router.post("/api/login", async (req, res) => {
         } else {
           samaccount = results[0].samaccount;
 
-          const waitingForResult = await verifyLogin(samaccount, userip);
+          // const waitingForResult = await verifyLogin(samaccount, userip);
+
+          const waitingForResult = 1;
 
           if (waitingForResult == 1) {
             if (bcrypt.compareSync(passcode, results[0].password)) {
@@ -255,7 +257,9 @@ async function sendVerificationKey(res, email) {
 
 router.post("/api/verifycode", (req, res) => {
   const id = req.body.verificationCode;
-  id === generatedKey ? (isGeneratedKeyValid = true, res.send("Verified")) : res.send("Invalid");
+  id === generatedKey
+    ? ((isGeneratedKeyValid = true), res.send("Verified"))
+    : res.send("Invalid");
 });
 
 router.put("/api/createnewpassword", (req, res) => {
@@ -897,6 +901,188 @@ router.get("/api/searchData", (req, res) => {
             } else {
               console.log(
                 "Error occurred while trying to close the connection with the database " +
+                  err.message
+              );
+            }
+          });
+        });
+      });
+    } else {
+      res.json("Authorization Failed. Token Expired. Please Login Again.");
+    }
+  });
+});
+
+router.get("/api/geteservicesdata", (req, res) => {
+  const token = req.get("key");
+
+  if (!token) {
+    res.json("No Token Provided");
+    return;
+  }
+
+  jwt.verify(token, secret, function (err, decoded) {
+    if (!err) {
+      const fetchData = "SELECT * FROM ESUSER.INTERNAL_USER_PROFILE";
+
+      db2.open(secp, (err, conn) => {
+        if (!err) {
+          console.log("Connected Successfully");
+        } else {
+          console.log(
+            "Error occurred while connecting to the database" + err.message
+          );
+        }
+
+        conn.query(fetchData, (err, results) => {
+          if (!err) {
+            res.send(results);
+          } else {
+            console.log(
+              "Error occurred while fetching the EServices Management Data" +
+                err.message
+            );
+          }
+
+          conn.close((err) => {
+            if (!err) {
+              console.log("Connection closed with the database");
+            } else {
+              console.log(
+                "Error occurred while trying to close the connection with the database" +
+                  err.message
+              );
+            }
+          });
+        });
+      });
+    } else {
+      res.json("Authorization Failed. Token Expired. Please Login Again.");
+    }
+  });
+});
+
+router.get("/api/searcheservicesdata", (req, res) => {
+  const token = req.get("key");
+
+  if (!token) {
+    res.json("No Token Provided");
+    return;
+  }
+
+  jwt.verify(token, secret, function (err, decoded) {
+    if (!err) {
+      const key = req.query.id.toLowerCase();
+      const fetchData = `SELECT * FROM ESUSER.INTERNAL_USER_PROFILE WHERE LOWER(USER_ID) LIKE '%${key}%' OR LOWER(USER_STATUS) LIKE 
+                        '%${key}%' OR LOWER(IS_MIGRATED_USER) LIKE '%${key}%' OR LOWER(GENDER) LIKE '%${key}%' OR LOWER(CRO) LIKE 
+                        '%${key}%' OR LOWER(BUSINESS_CATEGORY) LIKE '%${key}%' OR LOWER(EMPLOYEE_TYPE) LIKE '%${key}%' OR 
+                         LOWER(DESIGNATION) LIKE '%${key}%' OR LOWER(DEPARTMENT) LIKE '%${key}%' OR LOWER(LOCATION) LIKE '%${key}%'`;
+
+      db2.open(secp, (err, conn) => {
+        if (!err) {
+          console.log("Connected Successfully");
+        } else {
+          console.log(
+            "Error occurred while connecting to the database" + err.message
+          );
+        }
+
+        conn.query(fetchData, (err, results) => {
+          if (!err) {
+            res.send(results);
+          } else {
+            console.log(
+              "Error occurred while searching the EServices Management data" +
+                err.message
+            );
+          }
+
+          conn.close((err) => {
+            if (!err) {
+              console.log("Connection closed with the database");
+            } else {
+              console.log(
+                "Error occurred while trying to close the connection with the database" +
+                  err.message
+              );
+            }
+          });
+        });
+      });
+    } else {
+      res.json("Authorization Failed. Token Expired. Please Login Again.");
+    }
+  });
+});
+
+router.post("/api/posteservicesdata", (req, res) => {
+  const token = req.get("key");
+
+  if (!token) {
+    res.json("No Token Provided");
+    return;
+  }
+
+  jwt.verify(token, secret, function (err, decoded) {
+    if (!err) {
+      const {
+        firstName,
+        lastName,
+        userId,
+        userStatus,
+        userCell,
+        userEmail,
+        isUserMigrated,
+        createdBy,
+        createdWhen,
+        modifiedBy,
+        modifiedWhen,
+        userGender,
+        userCro,
+        businessCategory,
+        employeeType,
+        adUser,
+        userPassword,
+        employeeId,
+        userDesignation,
+        userDepartment,
+        userLocation,
+      } = req.body;
+
+      const postData = `INSERT INTO ESUSER.INTERNAL_USER_PROFILE(USER_ID, USER_NAME, F_NAME, L_NAME, USER_STATUS, 
+                        USER_CELL, USER_PICTURE, USER_EMAIL, IS_MIGRATED_USER, CREATED_BY, CREATED_WHEN, MODIFIED_BY, MODIFIED_WHEN, 
+                        GENDER, CRO, BUSINESS_CATEGORY, EMPLOYEE_TYPE, AD_USER, PASSWORD, DESIGNATION, EMPLOYEE_ID, DIVISION, 
+                        DEPARTMENT, LOCATION) VALUES ('${userId}', '${
+        firstName + " " + lastName
+      }', '${firstName}', '${lastName}', '${userStatus}', ${userCell}, null, '${userEmail}', '${isUserMigrated}', '${createdBy}', '${createdWhen}', 
+      '${modifiedBy}', '${modifiedWhen}', '${userGender}', '${userCro}', '${businessCategory}', '${employeeType}', '${adUser}', ENCRYPT('${firstName}', '${userPassword}'),
+      '${userDesignation}', ${employeeId}, null, '${userDepartment}', '${userLocation}')`;
+
+      db2.open(secp, (err, conn) => {
+        if (!err) {
+          console.log("Connected Successfully");
+        } else {
+          console.log(
+            "Error occurred while connecting to the database" + err.message
+          );
+        }
+
+        conn.query(postData, (err, results) => {
+          if (!err) {
+            res.send('Success');
+          } else {
+            console.log(
+              "Error occurred while posting the EServices Management data" +
+                err.message
+            );
+          }
+
+          conn.close((err) => {
+            if (!err) {
+              console.log("Connection closed with the database");
+            } else {
+              console.log(
+                "Error occurred while trying to close the connection with the database" +
                   err.message
               );
             }

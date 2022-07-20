@@ -4,7 +4,6 @@ import { UserAccess } from '../../../services/login-service/login.service';
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
 import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { ElementRef } from '@angular/core';
 import { BASE_URL } from '../../../constants/base-url.constant';
 import { FEATURE_API, PRODUCTS_API } from '../../../enums/apis.enum';
 import { EXTERNAL_URLS } from '../../../constants/external-urls.constant';
@@ -61,8 +60,7 @@ export class ViewCompanyRecordsComponent implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private useraccess: UserAccess,
-    private elref: ElementRef
+    private useraccess: UserAccess
   ) {}
 
   ngOnInit(): void {}

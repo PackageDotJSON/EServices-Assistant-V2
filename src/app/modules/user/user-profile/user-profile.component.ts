@@ -8,7 +8,7 @@ import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
 import { BASE_URL } from '../../../constants/base-url.constant';
 import { USER_PROFILE_API } from '../../../enums/apis.enum';
-import { RequestLogService } from '../services/request-log.service';
+import { UserService } from '../services/user.service';
 declare var $: any;
 
 @Component({
@@ -61,7 +61,7 @@ export class UserprofileComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     public useraccess: UserAccess,
     private router: Router,
-    private requestLogService: RequestLogService
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -148,7 +148,7 @@ export class UserprofileComponent implements OnInit, OnDestroy {
     if (email) {
       if (this.userMessage.length <= 200 && this.userMessage.length > 10) {
         this.subscriber.push(
-          this.requestLogService
+          this.userService
             .postLogRequest(email, this.userMessage)
             .pipe(
               tap((res) => {

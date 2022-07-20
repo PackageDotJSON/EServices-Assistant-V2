@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { RequestLog } from 'src/app/models/requestlog.model';
-import { RequestLogService } from '../services/request-log.service';
+import { RequestLog } from 'src/app/modules/user/models/requestlog.model';
+import { UserService } from '../services/user.service';
 import { Admin } from '../../../models/adminpanel.model';
 import * as bootstrap from 'bootstrap';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -46,7 +46,7 @@ export class RequestlogComponent implements OnInit, OnDestroy {
   subscriber: Subscription[] = [];
 
   constructor(
-    private requestLogService: RequestLogService,
+    private userService: UserService,
     private http: HttpClient,
     private useraccess: UserAccess,
     private router: Router
@@ -57,12 +57,12 @@ export class RequestlogComponent implements OnInit, OnDestroy {
   }
 
   getLogRequests() {
-    this.requestsLog$ = this.requestLogService.getLogRequests();
+    this.requestsLog$ = this.userService.getLogRequests();
   }
 
   deleteReqLog(log: any) {
     this.subscriber.push(
-      this.requestLogService
+      this.userService
         .deleteLogRequest(log.USEREMAIL, log.USERMESSAGE)
         .pipe(
           tap((res) => {

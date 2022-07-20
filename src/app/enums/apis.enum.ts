@@ -7,9 +7,9 @@ export const enum LOGIN_API {
     CREATE_NEW_PASSWORD_API = '/api/createnewpassword'
 }
 
-// admin route api urls
+// application management route api urls
 
-export const enum ADMIN_API {
+export const enum APPLICATION_MANAGEMENT_API {
     TOTAL_DATA = '/api/totalData',
     ADMIN_DATA = '/api/adminData',
     SUB_ADMIN_DATA = '/api/subAdminData',
@@ -18,6 +18,14 @@ export const enum ADMIN_API {
     DELETE_SUB_RIGHTS = '/api/deletesubrights',
     SEARCH_DATA = '/api/searchData',
     POST_DATA = '/api/postData'
+}
+
+// eservices management route api urls
+
+export const enum ESERVICES_MANAGEMENT_API {
+    GET_DATA = '/api/geteservicesdata',
+    SEARCH_DATA = '/api/searcheservicesdata',
+    POST_DATA = '/api/posteservicesdata',
 }
 
 // bank company log api urls

@@ -3,21 +3,21 @@ import { HttpClient } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { NgForm } from '@angular/forms';
-import { Admin } from '../../../models/adminpanel.model';
-import { UserAccess } from '../../../services/login-service/login.service';
+import { Admin } from '../../../../models/adminpanel.model';
+import { UserAccess } from '../../../../services/login-service/login.service';
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
-import { ADMIN_API } from '../../../enums/apis.enum';
-import { BASE_URL } from '../../../constants/base-url.constant';
+import { APPLICATION_MANAGEMENT_API } from '../../../../enums/apis.enum';
+import { BASE_URL } from '../../../../constants/base-url.constant';
 import { Subscription } from 'rxjs';
 declare var $: any;
 
 @Component({
-  selector: 'app-admin-panel',
-  templateUrl: './admin-panel.component.html',
-  styleUrls: ['./admin-panel.component.css'],
+  selector: 'app-application-management',
+  templateUrl: './application-management.component.html',
+  styleUrls: ['./application-management.component.css'],
 })
-export class AdminpanelComponent implements OnInit, OnDestroy {
+export class ApplicationManagementComponent implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private useraccess: UserAccess,
@@ -77,7 +77,7 @@ export class AdminpanelComponent implements OnInit, OnDestroy {
   calculateDataApi() {
     this.subscriber.push(
       this.http
-        .get(BASE_URL + ADMIN_API.TOTAL_DATA)
+        .get(BASE_URL + APPLICATION_MANAGEMENT_API.TOTAL_DATA)
         .pipe(
           map((responseData) => {
             if (JSON.stringify(responseData).includes('No Token Provided')) {
@@ -121,7 +121,7 @@ export class AdminpanelComponent implements OnInit, OnDestroy {
     const params = new HttpParams().set('id', num).set('id2', num2);
     this.subscriber.push(
       this.http
-        .get<{ [key: string]: Admin }>(BASE_URL + ADMIN_API.ADMIN_DATA, {
+        .get<{ [key: string]: Admin }>(BASE_URL + APPLICATION_MANAGEMENT_API.ADMIN_DATA, {
           params,
         })
         .pipe(
@@ -196,7 +196,7 @@ export class AdminpanelComponent implements OnInit, OnDestroy {
     const params = new HttpParams().set('id', userMail);
     this.subscriber.push(
       this.http
-        .get(BASE_URL + ADMIN_API.SUB_ADMIN_DATA, { params })
+        .get(BASE_URL + APPLICATION_MANAGEMENT_API.SUB_ADMIN_DATA, { params })
         .pipe(
           map((responseData) => {
             return responseData;
@@ -267,7 +267,7 @@ export class AdminpanelComponent implements OnInit, OnDestroy {
 
     this.subscriber.push(
       this.http
-        .put(BASE_URL + ADMIN_API.MODIFY_RIGHTS, null, { params })
+        .put(BASE_URL + APPLICATION_MANAGEMENT_API.MODIFY_RIGHTS, null, { params })
         .subscribe(
           (responseData) => {
             if (JSON.stringify(responseData).includes('No Token Provided')) {
@@ -326,7 +326,7 @@ export class AdminpanelComponent implements OnInit, OnDestroy {
     this.subscriber.push(
       this.http
         .post(
-          BASE_URL + ADMIN_API.MODIFY_SUB_RIGHTS,
+          BASE_URL + APPLICATION_MANAGEMENT_API.MODIFY_SUB_RIGHTS,
           {
             rights: this.updatedUserRightsToSend,
             roles: this.subAdminAllRoles,
@@ -393,7 +393,7 @@ export class AdminpanelComponent implements OnInit, OnDestroy {
 
     this.subscriber.push(
       this.http
-        .delete(BASE_URL + ADMIN_API.DELETE_SUB_RIGHTS, { params })
+        .delete(BASE_URL + APPLICATION_MANAGEMENT_API.DELETE_SUB_RIGHTS, { params })
         .subscribe(
           (responseData) => {
             if (JSON.stringify(responseData).includes('No Token Provided')) {
@@ -432,7 +432,7 @@ export class AdminpanelComponent implements OnInit, OnDestroy {
     this.searchDataKey = '';
     this.subscriber.push(
       this.http
-        .get<{ [key: string]: Admin }>(BASE_URL + ADMIN_API.SEARCH_DATA, {
+        .get<{ [key: string]: Admin }>(BASE_URL + APPLICATION_MANAGEMENT_API.SEARCH_DATA, {
           params,
         })
         .pipe(
@@ -526,7 +526,7 @@ export class AdminpanelComponent implements OnInit, OnDestroy {
 
     this.subscriber.push(
       this.http
-        .post(BASE_URL + ADMIN_API.POST_DATA, form.value, {
+        .post(BASE_URL + APPLICATION_MANAGEMENT_API.POST_DATA, form.value, {
           responseType: 'text',
         })
         .subscribe(

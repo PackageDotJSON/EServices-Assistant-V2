@@ -23,7 +23,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   serverError = false;
 
   readonly homeUrl = ROUTES_URL.HOME_URL;
-  readonly adminUrl = ROUTES_URL.ADMIN_URL;
+  readonly applicationManagementUrl = ROUTES_URL.APPLICATION_MANAGEMENT_URL;
+  readonly eservicesManagementUrl = ROUTES_URL.ESERVICES_MANAGEMENT_URL;
   readonly helpUrl = ROUTES_URL.HELP_URL;
   readonly logoutUrl = ROUTES_URL.LOG_OUT_URL;
   readonly userprofileUrl = ROUTES_URL.USER_PROFILE;
@@ -56,37 +57,38 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   fetchUserRights() {
-    this.subscriber.push(this.headerService.fetchUserRights().subscribe(
-      (responseData) => {
-        if (JSON.stringify(responseData).includes('No Token Provided')) {
-          this.noTokenError = true;
-        } else if (
-          JSON.stringify(responseData).includes(
-            'Authorization Failed. Token Expired. Please Login Again.'
-          )
-        ) {
-          this.authFailedError = true;
-          setTimeout(() => {
-            this.useraccess.accessTypeFull = false;
-            this.useraccess.accessTypePartial = false;
-            this.useraccess.accessTypeMinimum = false;
-            window.sessionStorage.clear();
-            this.router.navigateByUrl(ROUTES_URL.LOGIN_URL);
-            location.reload();
-          }, 2000);
-        } else {
-          this.routes = responseData;
-          for (let i = 0; i < this.routes.length; i++) {
-            this.routes[i].routes =
-              ROUTES_URL.REPORTS_URL + this.routes[i].routes;
+    this.subscriber.push(
+      this.headerService.fetchUserRights().subscribe(
+        (responseData) => {
+          if (JSON.stringify(responseData).includes('No Token Provided')) {
+            this.noTokenError = true;
+          } else if (
+            JSON.stringify(responseData).includes(
+              'Authorization Failed. Token Expired. Please Login Again.'
+            )
+          ) {
+            this.authFailedError = true;
+            setTimeout(() => {
+              this.useraccess.accessTypeFull = false;
+              this.useraccess.accessTypePartial = false;
+              this.useraccess.accessTypeMinimum = false;
+              window.sessionStorage.clear();
+              this.router.navigateByUrl(ROUTES_URL.LOGIN_URL);
+              location.reload();
+            }, 2000);
+          } else {
+            this.routes = responseData;
+            for (let i = 0; i < this.routes.length; i++) {
+              this.routes[i].routes =
+                ROUTES_URL.REPORTS_URL + this.routes[i].routes;
+            }
           }
+        },
+        (error) => {
+          this.serverError = true;
+          this.showServerAlert();
         }
-      },
-      (error) => {
-        this.serverError = true;
-        this.showServerAlert();
-      }
-    )
+      )
     );
   }
 
@@ -99,6 +101,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriber.forEach(subscription => subscription.unsubscribe());
+    this.subscriber.forEach((subscription) => subscription.unsubscribe());
   }
 }
